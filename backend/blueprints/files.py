@@ -60,9 +60,9 @@ def run_s3():
             bucket = s3_client.create_bucket(Bucket=bucket_name,
                                              CreateBucketConfiguration={'LocationConstraint': region_name})
 
-    for dir in os.listdir("../test_fajlovi"):
+    for dir in os.listdir("./test_fajlovi"):
         dir_name = dir.split(".")[0]  # naziv datoteke
-        dir_type = dir.split(".")[1]  # tip datoteke
+        dir_type = dir.split(".")[1]  # tip datoteke //a sta ako ima nesto kao qmd_1304.tar.gz ?
 
         size_arg = "KB"
         dir_size = str(get_file_size("test_fajlovi/" + dir, size_arg)) + " " + size_arg  # velicina fajla
