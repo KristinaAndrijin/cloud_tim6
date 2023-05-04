@@ -1,16 +1,17 @@
-import boto3
-import botocore
-import re
-import datetime
-
-from keys import *
-from flask import *
+from flask import Blueprint, request, make_response
 from flask_api import status
+from keys import *
+import re
+import botocore
+import datetime
+import boto3
+
+
+login_bp = Blueprint('login', __name__)
+signup_bp = Blueprint('signup', __name__)
 
 regex_email = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
 password_pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
-
-app = Flask(__name__)
 
 session = boto3.Session(
     aws_access_key_id=aws_access_key,
@@ -19,30 +20,6 @@ session = boto3.Session(
 )
 
 db = session.client('dynamodb')
-
-
-# @app.route('/', methods=['get'])
-# def kme():
-#     table = db.create_table(
-#         TableName='users',
-#         KeySchema=[{'AttributeName': 'username', 'KeyType': 'HASH'}],
-#         AttributeDefinitions=[{'AttributeName': 'username', 'AttributeType': 'S'}],
-#
-#         ProvisionedThroughput={
-#             'ReadCapacityUnits': 5,
-#             'WriteCapacityUnits': 3
-#         },
-#     )
-#     # Wait for the table to become active
-#     waiter = db.get_waiter('table_exists')
-#     waiter.wait(TableName='users')
-#
-#     response = db.list_tables(
-#         ExclusiveStartTableName='string',
-#         Limit=10
-#     )
-#     return response
-
 
 def is_valid(email):
     return re.fullmatch(regex_email, email)
@@ -77,7 +54,31 @@ def check_data(name, surname, birth_date, email, password):
     return ret_string
 
 
-@app.route('/signup', methods=['post'])
+@login_bp.route('/login', methods=['post'])
+def login():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+
+    response = db.get_item(
+        TableName="users",
+        Key={
+            'username': {'S': username}
+        }
+    )
+    try:
+        real_username = response['Item']['username']['S']
+        real_password = response['Item']['password']['S']
+        if username == real_username and password == real_password:
+            resp = make_response()
+            resp.set_cookie('username', username)
+            return resp, status.HTTP_200_OK
+        return "Wrong username or password", status.HTTP_400_BAD_REQUEST
+    except KeyError:
+        return "Wrong username or password", status.HTTP_400_BAD_REQUEST
+
+
+@signup_bp.route('/signup', methods=['post'])
 def signup():
     # get data
     data = request.get_json()
@@ -116,37 +117,3 @@ def signup():
             return "User with username " + username + " already exists", status.HTTP_400_BAD_REQUEST
         else:
             return "Error:" + str(e), status.HTTP_500_INTERNAL_SERVER_ERROR
-
-
-@app.route('/login', methods=['post'])
-def login():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
-
-    response = db.get_item(
-        TableName="users",
-        Key={
-            'username': {'S': username}
-        }
-    )
-    try:
-        real_username = response['Item']['username']['S']
-        real_password = response['Item']['password']['S']
-        if username == real_username and password == real_password:
-            resp = make_response()
-            resp.set_cookie('username', username)
-            return resp, status.HTTP_200_OK
-        return "Wrong username or password", status.HTTP_400_BAD_REQUEST
-    except KeyError:
-        return "Wrong username or password", status.HTTP_400_BAD_REQUEST
-
-
-@app.route('/getcookie')
-def get_cookie():
-    username = request.cookies.get('username')
-    return username
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
