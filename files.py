@@ -6,7 +6,8 @@ from keys import *
 username="djole"
 session = boto3.Session(
     aws_access_key_id=aws_access_key,
-    aws_secret_access_key=aws_secret_access_key
+    aws_secret_access_key=aws_secret_access_key,
+    region_name=region_name
 )
 def upload_object(s3_client, file_path, bucket_name):
     response = s3_client.list_objects(Bucket=bucket_name, Prefix=username+"/", Delimiter="/")
@@ -33,7 +34,7 @@ def run_s3():
 
     response = s3_client.list_buckets()
     if bucket_name not in response['Buckets']:
-        bucket = s3_client.create_bucket(Bucket=bucket_name)
+        bucket = s3_client.create_bucket(Bucket=bucket_name, CreateBucketConfiguration = {'LocationConstraint': region_name})
 
     for dir in os.listdir("test_fajlovi"):
         upload_object(s3_client,"test_fajlovi/"+dir,bucket_name)
