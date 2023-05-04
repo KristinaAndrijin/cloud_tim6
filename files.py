@@ -3,7 +3,7 @@ import os
 import boto3
 from keys import *
 
-username="djole"
+username="kris"
 session = boto3.Session(
     aws_access_key_id=aws_access_key,
     aws_secret_access_key=aws_secret_access_key,
@@ -30,7 +30,7 @@ def print_all_objects(s3_client, bucket_name):
 def run_s3():
 
     s3_client = session.client('s3')
-    bucket_name = 'projekat'
+    bucket_name = 'projekat5'
 
     response = s3_client.list_buckets()
     if bucket_name not in response['Buckets']:
