@@ -134,10 +134,18 @@ def login():
         real_username = response['Item']['username']['S']
         real_password = response['Item']['password']['S']
         if username == real_username and password == real_password:
-            return "Successful login"
+            resp = make_response()
+            resp.set_cookie('username', username)
+            return resp, status.HTTP_200_OK
         return "Wrong username or password", status.HTTP_400_BAD_REQUEST
     except KeyError:
         return "Wrong username or password", status.HTTP_400_BAD_REQUEST
+
+
+@app.route('/getcookie')
+def get_cookie():
+    username = request.cookies.get('username')
+    return username
 
 
 if __name__ == "__main__":
