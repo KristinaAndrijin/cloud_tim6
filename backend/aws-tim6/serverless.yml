@@ -1,0 +1,18 @@
+service: aws-tim6
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  profile: serverlessUser
+  region: eu-central-1
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: GET
+          cors: true
