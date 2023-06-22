@@ -7,6 +7,7 @@ provider:
   runtime: python3.9
   profile: serverlessUser
   region: eu-central-1
+  stage: dev
 
 functions:
   hello:
@@ -16,3 +17,118 @@ functions:
           path: hello
           method: GET
           cors: true
+
+resources:
+  Resources:
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:provider.stage}-user-pool
+        UsernameAttributes:
+          - email
+          - phone_number
+        AutoVerifiedAttributes:
+          - email
+          # - phone_number
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireNumbers: true
+            RequireSymbols: true
+            RequireUppercase: true
+        UsernameConfiguration:
+          CaseSensitive: true
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: verified_email
+              Priority: 1
+            - Name: verified_phone_number
+              Priority: 2
+        Schema:
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: given_name
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: family_name
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: phone_number
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: email
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: username
+          - AttributeDataType: String 
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: birthdate
+        # EmailVerificationSubject: Verify your email for our app
+        # EmailVerificationMessage: Please click the link below to verify your email address. {####} is your verification code.
+        # SmsVerificationMessage: Your verification code for our app is {####}
+        # MfaConfiguration: ON
+        EmailConfiguration: 
+          EmailSendingAccount: COGNITO_DEFAULT
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.stage}-user-pool-client
+        UserPoolId: !Ref CognitoUserPool
+        GenerateSecret: false
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        TokenValidityUnits:
+          AccessToken: minutes 
+          IdToken: minutes 
+          RefreshToken: days
+        AccessTokenValidity: 30
+        IdTokenValidity: 60
+        RefreshTokenValidity: 10
+        DefaultRedirectURI: http://localhost:4200/
+        CallbackURLs: 
+          - http://localhost:4200/
+        LogoutURLs: 
+          - http://localhost:4200/login
+        SupportedIdentityProviders:
+          - COGNITO
+        AllowedOAuthFlows:
+          - code
+          - implicit
+        AllowedOAuthScopes:
+          - openid
+          - email
+          - profile
+
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ApiGateway
+
+
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain: my-domain
+        UserPoolId: !Ref CognitoUserPool
+
+
+    DataHiveApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: ApiAuthorizer
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - Fn::GetAtt: [CognitoUserPool, Arn]
+        IdentitySource: method.request.header.Authorization
+
+
