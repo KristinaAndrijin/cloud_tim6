@@ -16,3 +16,22 @@ functions:
           path: hello
           method: GET
           cors: true
+resources:
+  Resources:
+    projekat6:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: projekat6
+    filesMetadata:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: filesMetadata
+        AttributeDefinitions:
+          - AttributeName: object_key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: object_key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
