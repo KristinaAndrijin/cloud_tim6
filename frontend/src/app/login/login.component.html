@@ -1,0 +1,21 @@
+<div class="div">
+    <h1>Login</h1>
+    <form
+      method="POST"
+      [formGroup]="loginForm" 
+      (ngSubmit)="onLogin()"
+    >
+        <input class="element" type="text"  formControlName="username" placeholder="Enter Username" name="username" id="username" required>
+        <div *ngIf="loginForm.hasError('validUsername')">
+          Email not in the right format
+        </div>
+        <br>
+
+        <input class="element" type="password" name="password" minlength="8" formControlName="password" placeholder="Enter Password" id="password" required>
+        <div *ngIf="loginForm.hasError('validPassword')">Password not in the right format</div>
+        <br>
+
+        <button class="loginbtn" (keydown.enter)="onLogin()" type="submit" [disabled]="isDisabled">Login</button>
+        <p class="small mb-5 pb-lg-2"> Don't have account? <a class="text-white-50" [routerLink]="['/registration']">Sign up</a></p>
+    </form>
+</div>
