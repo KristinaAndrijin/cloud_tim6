@@ -6,23 +6,40 @@
       (ngSubmit)="onSignup()"
     >
         <input class="element" type="text"  formControlName="fname" placeholder="Enter First name" name="fname" id="fname" required>
+        <div *ngIf="registerForm.hasError('validName')">Name not in the right format</div>
+        <br>
 
         <input class="element" type="text"  formControlName="lname" placeholder="Enter Last name" name="lname" id="lname" required>
+        <div *ngIf="registerForm.hasError('validSurname')">Surname not in the right format</div>
+        <br>
 
         <input class="element" type="text"  formControlName="username" placeholder="Enter Username" name="username" id="username" required>
+        <div *ngIf="registerForm.hasError('validUsername')">Username not in the right format</div>
+        <br>
 
         <input class="element" type="text"  formControlName="email" placeholder="Enter Email" name="email" id="email" required>
+        <div *ngIf="registerForm.hasError('validEmail')">
+          Invalid email format
+        </div>
+        <br>
 
         <input class="element" type="text"   formControlName="mobileNo" placeholder="Enter Mobile number" name="mobileNo" id="mobileNo" required>
+        <div *ngIf="registerForm.hasError('validPN')">Number not in the right format</div>
+        <br>
 
         <br/>
         <label for="birthdate"><b>Enter birthdate: </b></label>
         <input class="element" type="date"  formControlName="birthdate" placeholder="Enter Birthdate" name="birthdate" id="birthdate" required>
         <br/>
+        <div *ngIf="registerForm.hasError('validB')">Choose date!!!</div>
+        <br>
 
         <input class="element" type="password" name="password" minlength="8" formControlName="password" placeholder="Enter Password" id="password" required>
+        <div *ngIf="registerForm.hasError('validPassword')">Password not in the right format</div>
+        <br>
 
-        <button class="registerbtn" type="submit">Register</button>
+        <button class="registerbtn" (keydown.enter)="onSignup()" type="submit" [disabled]="isDisabled">Register</button>
+        <p class="small mb-5 pb-lg-2"> Already have account? <a class="text-white-50" [routerLink]="['']">Log in</a></p>
     </form>
 </div>
 

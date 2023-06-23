@@ -17,8 +17,11 @@ export class RegistrationComponent {
   codeSent: boolean = false;
   codeForm!: FormGroup;
   userPool!: any;
+  isDisabled: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    this.check = this.check.bind(this);
+   }
 
   ngOnInit(): void {
     // if (!this.codeSent) {
@@ -31,7 +34,7 @@ export class RegistrationComponent {
         mobileNo: new FormControl('', Validators.required),
         birthdate: new FormControl('', Validators.required),
         btn: new FormControl("")},
-        // { validators: this.check },
+        { validators: this.check },
       );
     // } else {
       this.codeForm = new FormGroup({
@@ -82,24 +85,7 @@ export class RegistrationComponent {
         }
         console.log("jej");
         this.codeSent = true;
-      //   const username = this.registerForm.get('username')?.value;
-      // const userData = {
-      //   Username: username,
-      //   Pool: userPool
-      // };
-      // const cognitoUser = new CognitoUser(userData);
-      // console.log(cognitoUser);
-      // cognitoUser.confirmRegistration()
-        // this.router.navigate(['/login']);
       });
-
-      // const username = this.registerForm.get('username')?.value;
-      // const userData = {
-      //   Username: username,
-      //   Pool: userPool
-      // };
-      // const cognitoUser = new CognitoUser(userData);
-      // console.log(cognitoUser);
   }
 
   checkCode() {
@@ -115,14 +101,10 @@ export class RegistrationComponent {
         if (err) {
           console.log(err);
           alert(err.message || JSON.stringify(err));
-          // Handle the error, e.g., display an error message to the user
         } else {
           console.log(result);
           alert("Slay!");
           codeSuccess = true;
-          // this.router.navigate(['/login']);
-          // The user has been successfully confirmed
-          // You can now allow the user to sign in or perform other actions
         }
       })
     if (codeSuccess) {
@@ -130,6 +112,56 @@ export class RegistrationComponent {
     }
   }
   
+  check(control: AbstractControl) {
+    // return 
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])(?=.*[^\s]).{8,}$/;
+    const lettersOnlyRegex = /^[A-Za-z]+$/;
+    const numbersOnlyRegex = /^\+?\d+$/;
+    const letterAndNumbersRegex = /^[a-zA-Z0-9]+$/;
+    const password = control.get('password');
+    const isValidPassword = passwordRegex.test(password?.value);
+    const cmail = control.get('email');
+    const isValidEmail = emailRegex.test(cmail?.value);
+    const name = control.get('fname');
+    const isValidName = lettersOnlyRegex.test(name?.value);
+    const surname = control.get('lname');
+    const isValidSurname = lettersOnlyRegex.test(surname?.value);
+    const phoneNumber = control.get('mobileNo');
+    const isPhoneValid = numbersOnlyRegex.test(phoneNumber?.value);
+    const username = control.get('username');
+    const isUsernameValid = letterAndNumbersRegex.test(username?.value);
+    const birthdate = control.get('birthdate');
+    const isBirthdateValid = birthdate?.value != '';
+    if (isValidEmail && isValidPassword && isValidName && isValidSurname && isPhoneValid && isUsernameValid) {
+      this.isDisabled = false;
+    } else {
+      this.isDisabled = true;
+    }
+    const errors: { [key: string]: any } = {};
+    if (!isValidEmail) {
+      errors['validEmail'] = true;
+    }
+    if (!isValidPassword) {
+      errors['validPassword'] = true;
+    }
+    if (!isValidName) {
+      errors['validName'] = true;
+    }
+    if (!isValidSurname) {
+      errors['validSurname'] = true;
+    }
+    if (!isPhoneValid) {
+      errors['validPN'] = true;
+    }
+    if (!isUsernameValid) {
+      errors['validUsername'] = true;
+    }
+    if (!isBirthdateValid) {
+      errors['validB'] = true;
+    }
+   return Object.keys(errors).length > 0 ? errors : null;
+  }
 
 }
 
