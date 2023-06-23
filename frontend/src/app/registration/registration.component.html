@@ -1,4 +1,4 @@
-<div class="div">
+<div class="div" *ngIf="!codeSent">
     <h1>Registration</h1>
     <form
       method="POST"
@@ -24,4 +24,16 @@
 
         <button class="registerbtn" type="submit">Register</button>
     </form>
+</div>
+
+<div class="div" *ngIf="codeSent">
+  <h1> You have received code on the provided mail, please input it here: </h1>
+  <form
+[formGroup]="codeForm" 
+(ngSubmit)="checkCode()"
+>
+    <label>Code we sent you: </label><input class="element" type="text" formControlName="code">
+    <br>
+    <button type="submit">Confirm</button>
+</form>
 </div>
