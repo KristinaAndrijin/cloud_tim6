@@ -5,8 +5,8 @@
       [formGroup]="loginForm" 
       (ngSubmit)="onLogin()"
     >
-        <input class="element" type="text"  formControlName="email" placeholder="Enter Email" name="email" id="email" required>
-        <div *ngIf="loginForm.hasError('validEmail')">
+        <input class="element" type="text"  formControlName="username" placeholder="Enter Username" name="username" id="username" required>
+        <div *ngIf="loginForm.hasError('validUsername')">
           Email not in the right format
         </div>
         <br>

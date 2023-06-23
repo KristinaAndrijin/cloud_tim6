@@ -11,24 +11,76 @@ import { environment } from 'src/environments/environment';
 })
 export class LoginComponent implements OnInit{
   isLoading: boolean = false;
-  email_address: string = "";
+  username: string = "";
   password: string = "";
   loginForm!: FormGroup;
   isDisabled: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    this.check = this.check.bind(this);
+   }
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
-      email: new FormControl('', Validators.required),
+      username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
       btn: new FormControl("")},
-      // { validators: this.check },
+      { validators: this.check },
     );
   }
 
   onLogin() {
+    this.username = this.loginForm.get('username')?.value;
+    this.password = this.loginForm.get('password')?.value
+    let authenticationDetails = new AuthenticationDetails({
+      Username: this.username,
+      Password: this.password,
+  });
+    let poolData = {
+      UserPoolId: environment.cognitoUserPoolId,
+      ClientId: environment.cognitoAppClientId
+    };
+
+    let userPool = new CognitoUserPool(poolData);
+      let userData = { Username: this.username, Pool: userPool };
+      var cognitoUser = new CognitoUser(userData);
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: (result) => {
+          console.log("slay");
+          // alert("slay")
+          // this.router.navigate(["dashboard"])
+        },
+        onFailure: (err) => {
+          alert(err.message || JSON.stringify(err));
+          this.isLoading = false;
+        },
+      });
+
+  }
+
+  check(control: AbstractControl) {
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])(?=.*[^\s]).{8,}$/;
+    const password = control.get('password');
+    const isValidPassword = passwordRegex.test(password?.value);
+    const cmail = control.get('username');
+    const isValidUsername = usernameRegex.test(cmail?.value);
+    if (isValidUsername && isValidPassword) {
+      this.isDisabled = false;
+    } else {
+      this.isDisabled = true;
+    }
+    const errors: { [key: string]: any } = {};
+    if (!isValidUsername) {
+      errors['validUsername'] = true;
+    }
+    if (!isValidPassword) {
+      errors['validPassword'] = true;
+    }
+    return Object.keys(errors).length > 0 ? errors : null;
     
   }
+
+
 
 }
