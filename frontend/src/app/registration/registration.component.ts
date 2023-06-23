@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CognitoUserPool,CognitoUserAttribute, CognitoUser  } from 'amazon-cognito-identity-js';
+import { CognitoUserPool,CognitoUserAttribute, CognitoUser } from 'amazon-cognito-identity-js';
 import { NgForm, FormGroup, FormControl, Validators, AbstractControl} from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
 })
-export class RegistrationComponent {
+export class RegistrationComponent implements OnInit{
   isLoading:boolean = false;
   username:string = '';
   registerForm!: FormGroup;
@@ -18,6 +18,7 @@ export class RegistrationComponent {
   codeForm!: FormGroup;
   userPool!: any;
   isDisabled: boolean = false;
+  codeSuccessful: boolean = false;
 
   constructor(private router: Router) {
     this.check = this.check.bind(this);
@@ -58,7 +59,7 @@ export class RegistrationComponent {
       let formData: formDataInterface = {
         "given_name": this.registerForm.get('fname')?.value,
         "family_name": this.registerForm.get('lname')?.value,
-        "custom:username": this.registerForm.get('username')?.value,
+        "preferred_username": this.registerForm.get('username')?.value,
         "email": this.registerForm.get('email')?.value,
         "phone_number": this.registerForm.get('mobileNo')?.value,
         "birthdate": this.registerForm.get('birthdate')?.value,
@@ -73,7 +74,7 @@ export class RegistrationComponent {
         let attribute = new CognitoUserAttribute(attrData); 
         attributeList.push(attribute)
       }
-      this.username = this.registerForm.get('email')?.value
+      this.username = this.registerForm.get('username')?.value
       this.userPool.signUp(this.username, this.registerForm.get('password')?.value, attributeList, [], (
         err: any,
         result: any
@@ -89,7 +90,8 @@ export class RegistrationComponent {
   }
 
   checkCode() {
-    let codeSuccess: boolean = false;
+    var codeSuccess: boolean = true;
+    let that = this;
     const username = this.username;
       const userData = {
         Username: username,
@@ -100,15 +102,16 @@ export class RegistrationComponent {
       cognitoUser.confirmRegistration(this.codeForm.get('code')?.value, true, function(err, result) {
         if (err) {
           console.log(err);
+          codeSuccess = false;
           alert(err.message || JSON.stringify(err));
         } else {
           console.log(result);
+          that.router.navigate(['/login']);
           alert("Slay!");
-          codeSuccess = true;
         }
       })
-    if (codeSuccess) {
-      this.router.navigate(['']);
+    if (codeSuccess && this.codeSuccessful) {
+      this.router.navigate(['/login']);
     }
   }
   
@@ -169,7 +172,7 @@ export class RegistrationComponent {
 interface formDataInterface {
   "given_name": string;
   "family_name": string;
-  "custom:username": string;
+  "preferred_username": string;
   "email": string;
   "phone_number": string;
   "birthdate": string;

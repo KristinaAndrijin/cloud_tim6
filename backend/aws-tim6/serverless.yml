@@ -64,7 +64,7 @@ resources:
           - AttributeDataType: String
             DeveloperOnlyAttribute: false
             Mutable: true
-            Name: username
+            Name: preferred_username
           - AttributeDataType: String 
             DeveloperOnlyAttribute: false
             Mutable: true
