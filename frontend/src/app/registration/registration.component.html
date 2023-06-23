@@ -1,6 +1,10 @@
 <div class="div">
     <h1>Registration</h1>
-    <form >
+    <form
+      method="POST"
+      [formGroup]="registerForm" 
+      (ngSubmit)="onSignup()"
+    >
         <input class="element" type="text"  formControlName="fname" placeholder="Enter First name" name="fname" id="fname" required>
 
         <input class="element" type="text"  formControlName="lname" placeholder="Enter Last name" name="lname" id="lname" required>
@@ -16,7 +20,7 @@
         <input class="element" type="date"  formControlName="birthdate" placeholder="Enter Birthdate" name="birthdate" id="birthdate" required>
         <br/>
 
-        <input class="element" type="password" name="password" minlength="8" formControlName="password" placeholder="Enter Password" id="psw" required>
+        <input class="element" type="password" name="password" minlength="8" formControlName="password" placeholder="Enter Password" id="password" required>
 
         <button class="registerbtn" type="submit">Register</button>
     </form>
