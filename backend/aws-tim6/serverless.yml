@@ -22,33 +22,6 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
-          # authorizers:
-          #   # JWT API authorizer
-          #   someJwtAuthorizer:
-          #     identitySource: $request.header.Authorization
-          #     issuerUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_xxxxx
-          #     audience:
-          #       - xxxx
-          #       - xxxx
-          # apiId: !Ref ApiGetwayApi
-          # auth:
-          #   authorizer: UsersCognitoAuthorizer
-          # cors:
-          #   allowedOrigins:
-          #     - '*'
-          #   allowedHeaders:
-          #     - Authorization
-          #   allowedMethods:
-          #     - POST
-          #   allowedCredentials:
-          #     - true
-          # authorizer:
-          #   name: MyApiAuthorizer
-          #   arn:
-          #     Fn::GetAtt:
-          #       - CognitoApiGatewayAuthorizer
-          #       - Arn
-
 resources:
   Resources:
     CognitoUserPool:

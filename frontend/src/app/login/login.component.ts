@@ -52,13 +52,6 @@ export class LoginComponent implements OnInit{
           const accessToken = result.getAccessToken().getJwtToken();
           console.log(result.getIdToken().getJwtToken());
           this.jwtService.setToken(result.getIdToken().getJwtToken());
-          this.helloService.sendHello().subscribe({
-            next: result => {
-              alert(result);
-            },
-            error: e =>
-            {console.log(e.message)}
-          })
           // console.log('Access Token:', accessToken);
           // alert("slay")
           // this.router.navigate(["dashboard"])
@@ -68,6 +61,14 @@ export class LoginComponent implements OnInit{
           this.isLoading = false;
         },
       });
+      this.helloService.sendHello().subscribe({
+        next: result => {
+          alert(result.message);
+          console.log(result);
+        },
+        error: e =>
+        {console.log(e.message)}
+      })
   }
 
   check(control: AbstractControl) {
