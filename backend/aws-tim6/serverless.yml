@@ -24,8 +24,8 @@ resources:
       Type: AWS::Cognito::UserPool
       Properties:
         UserPoolName: ${self:provider.stage}-user-pool
-        UsernameAttributes:
-          - username
+        # UsernameAttributes:
+        #   - username
         AutoVerifiedAttributes:
           - email
           # - phone_number

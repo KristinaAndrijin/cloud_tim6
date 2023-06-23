@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   apiUrl: 'https://localhost:8000/api',
-  cognitoUserPoolId: "eu-central-1_WlzIiOc44",
-  cognitoAppClientId: "21r7hqjm1qonrbsm77ql4hont2"
+  cognitoUserPoolId: "eu-central-1_04I5zhvA7",
+  cognitoAppClientId: "2prtdu300badfs1sque9rc66p3"
 };
 
 /*

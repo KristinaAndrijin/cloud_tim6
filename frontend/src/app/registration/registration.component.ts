@@ -73,7 +73,7 @@ export class RegistrationComponent {
         let attribute = new CognitoUserAttribute(attrData); 
         attributeList.push(attribute)
       }
-      this.username = this.registerForm.get('username')?.value
+      this.username = this.registerForm.get('email')?.value
       this.userPool.signUp(this.username, this.registerForm.get('password')?.value, attributeList, [], (
         err: any,
         result: any
@@ -89,6 +89,7 @@ export class RegistrationComponent {
   }
 
   checkCode() {
+    let codeSuccess: boolean = false;
     const username = this.username;
       const userData = {
         Username: username,
@@ -96,7 +97,6 @@ export class RegistrationComponent {
       };
       const cognitoUser = new CognitoUser(userData);
       console.log(cognitoUser);
-      let codeSuccess: boolean = false;
       cognitoUser.confirmRegistration(this.codeForm.get('code')?.value, true, function(err, result) {
         if (err) {
           console.log(err);
@@ -108,7 +108,7 @@ export class RegistrationComponent {
         }
       })
     if (codeSuccess) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['']);
     }
   }
   
