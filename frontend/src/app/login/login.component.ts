@@ -3,6 +3,8 @@ import { NgForm, FormGroup, FormControl, Validators, AbstractControl } from '@an
 import { Router } from '@angular/router';
 import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
 import { environment } from 'src/environments/environment';
+import { JwtService } from '../jwt.service';
+import { HelloService } from '../backend_services/hello.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +18,7 @@ export class LoginComponent implements OnInit{
   loginForm!: FormGroup;
   isDisabled: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private jwtService: JwtService, private helloService: HelloService) {
     this.check = this.check.bind(this);
    }
 
@@ -47,6 +49,17 @@ export class LoginComponent implements OnInit{
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
           console.log("slay");
+          const accessToken = result.getAccessToken().getJwtToken();
+          console.log(result.getIdToken().getJwtToken());
+          this.jwtService.setToken(result.getIdToken().getJwtToken());
+          this.helloService.sendHello().subscribe({
+            next: result => {
+              alert(result);
+            },
+            error: e =>
+            {console.log(e.message)}
+          })
+          // console.log('Access Token:', accessToken);
           // alert("slay")
           // this.router.navigate(["dashboard"])
         },
@@ -55,7 +68,6 @@ export class LoginComponent implements OnInit{
           this.isLoading = false;
         },
       });
-
   }
 
   check(control: AbstractControl) {

@@ -7,6 +7,9 @@ import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { ProtectedDashboardTryComponent } from './protected-dashboard-try/protected-dashboard-try.component';
 import { CognitoUserPool, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { JwtInterceptorService } from './jwt-interceptor.service';
+
 
 @NgModule({
   declarations: [
@@ -19,8 +22,15 @@ import { CognitoUserPool, CognitoUserAttribute } from 'amazon-cognito-identity-j
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptorService,
+      multi: true
+      },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

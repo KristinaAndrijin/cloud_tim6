@@ -17,6 +17,37 @@ functions:
           path: hello
           method: GET
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+          # authorizers:
+          #   # JWT API authorizer
+          #   someJwtAuthorizer:
+          #     identitySource: $request.header.Authorization
+          #     issuerUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_xxxxx
+          #     audience:
+          #       - xxxx
+          #       - xxxx
+          # apiId: !Ref ApiGetwayApi
+          # auth:
+          #   authorizer: UsersCognitoAuthorizer
+          # cors:
+          #   allowedOrigins:
+          #     - '*'
+          #   allowedHeaders:
+          #     - Authorization
+          #   allowedMethods:
+          #     - POST
+          #   allowedCredentials:
+          #     - true
+          # authorizer:
+          #   name: MyApiAuthorizer
+          #   arn:
+          #     Fn::GetAtt:
+          #       - CognitoApiGatewayAuthorizer
+          #       - Arn
 
 resources:
   Resources:
@@ -115,19 +146,31 @@ resources:
     CognitoUserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
-        Domain: my-domain
+        Domain: album6
         UserPoolId: !Ref CognitoUserPool
 
 
-    DataHiveApiGatewayAuthorizer:
+    # CognitoApiGatewayAuthorizer:
+    #   Type: AWS::ApiGateway::Authorizer
+    #   Properties:
+    #     RestApiId:
+    #       Ref: ApiGatewayRestApi
+    #     Name: MyApiAuthorizer
+    #     Type: COGNITO_USER_POOLS
+    #     IdentitySource: method.request.header.Authorization
+    #     ProviderARNs:
+    #       - Fn::GetAtt: [CognitoUserPool, Arn]
+
+    ApiGatewayAuthorizer:
+      DependsOn:
+        - ApiGatewayRestApi
       Type: AWS::ApiGateway::Authorizer
       Properties:
-        Name: ApiAuthorizer
+        Name: cognito-authorizer
+        IdentitySource: method.request.header.Authorization
         RestApiId:
           Ref: ApiGatewayRestApi
         Type: COGNITO_USER_POOLS
         ProviderARNs:
           - Fn::GetAtt: [CognitoUserPool, Arn]
-        IdentitySource: method.request.header.Authorization
-
 
