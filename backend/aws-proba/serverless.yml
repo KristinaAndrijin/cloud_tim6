@@ -1,0 +1,54 @@
+service: aws-proba
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  profile: serverlessUser
+  region: eu-central-1
+  stage: dev
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sns:Publish
+        - sns:Subscribe
+      Resource:
+        - arn:aws:sns:eu-central-1:275505252693:ProbaTopic
+
+functions:
+  publish:
+    handler: handler.publish
+    package:
+      patterns:
+        - 'handler.py'
+    events:
+      - http:
+          path: publish
+          method: GET
+          cors: true
+
+  subscribe:
+    handler: handler.subscribe
+    package:
+      patterns:
+        - 'handler.py'
+    events:
+      - http:
+          path: subscribe
+          method: GET
+          cors: true
+
+resources:
+  Resources:
+    SNSProbaTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ProbaTopic
+
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: aws.tim6@gmail.com
+        Protocol: email
+        TopicArn: {"Ref": "SNSProbaTopic"}
