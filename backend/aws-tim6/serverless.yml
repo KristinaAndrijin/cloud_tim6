@@ -8,6 +8,15 @@ provider:
   profile: serverlessUser
   region: eu-central-1
   stage: dev
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminGetUser
+        - cognito-idp:ListUsers
+        - cognito-idp:*
+      Resource:
+        - arn:aws:cognito-idp:eu-central-1:275505252693:userpool/eu-central-1_JTv6FBTKX
+
 
 functions:
   hello_from_other_func:
@@ -24,6 +33,21 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+
+  get_users:
+    handler: cognito-users.get_users
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: getUsers
+          method: GET
+          cors: true
+          # authorizer:
+          #   type: COGNITO_USER_POOLS
+          #   authorizerId:
+          #     Ref: ApiGatewayAuthorizer
 resources:
   Resources:
     projekat6:
