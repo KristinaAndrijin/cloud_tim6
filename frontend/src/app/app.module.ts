@@ -5,10 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
-import { ProtectedDashboardTryComponent } from './protected-dashboard-try/protected-dashboard-try.component';
 import { CognitoUserPool, CognitoUserAttribute } from 'amazon-cognito-identity-js';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptorService } from './jwt-interceptor.service';
+import { UserMainComponent } from './user-main/user-main.component';
 
 
 @NgModule({
@@ -16,7 +16,7 @@ import { JwtInterceptorService } from './jwt-interceptor.service';
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    ProtectedDashboardTryComponent
+    UserMainComponent
   ],
   imports: [
     BrowserModule,

@@ -13,5 +13,9 @@ export class JwtService {
     sessionStorage.setItem('accessToken',accessToken);
   }
 
+  logout(){
+    sessionStorage.clear();
+  }
+
   constructor() { }
 }

@@ -54,17 +54,17 @@ export class LoginComponent implements OnInit{
           this.jwtService.setToken(result.getIdToken().getJwtToken());
           this.helloService.sendHello().subscribe({
             next: result => {
-              console.log("hello stigao")
+              // console.log("hello stigao")
               alert(result.message);
               // console.log(result.event);
-              console.log(result);
+              // console.log(result);
             },
             error: e =>
             {console.log("no")}
           })
           console.log('Access Token:', accessToken);
-          alert("slay")
-          // this.router.navigate(["dashboard"])
+          // alert("slay")
+          this.router.navigate(["main"]);
         },
         onFailure: (err) => {
           console.log("login neuspesna");
