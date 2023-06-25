@@ -15,13 +15,18 @@ provider:
         - sns:Subscribe
       Resource:
         - arn:aws:sns:eu-central-1:275505252693:ProbaTopic
+    - Effect: Allow
+      Action:
+        - ses:*
+      Resource: 
+        - arn:aws:ses:eu-central-1:275505252693:identity/aws.tim6@gmail.com
 
 functions:
   publish:
-    handler: handler.publish
+    handler: sns.publish
     package:
       patterns:
-        - 'handler.py'
+        - 'sns.py'
     events:
       - http:
           path: publish
@@ -29,14 +34,25 @@ functions:
           cors: true
 
   subscribe:
-    handler: handler.subscribe
+    handler: sns.subscribe
     package:
       patterns:
-        - 'handler.py'
+        - 'sns.py'
     events:
       - http:
           path: subscribe
           method: GET
+          cors: true
+
+  sendEmail:
+    handler: ses.send_email
+    package:
+      patterns:
+        - 'ses.py'
+    events:
+      - http:
+          path: send-email
+          method: POST
           cors: true
 
 resources:
@@ -52,3 +68,9 @@ resources:
         Endpoint: aws.tim6@gmail.com
         Protocol: email
         TopicArn: {"Ref": "SNSProbaTopic"}
+
+    SESIdentity:
+      Type: AWS::SES::EmailIdentity
+      Properties: 
+        EmailIdentity: aws.tim6@gmail.com
+
