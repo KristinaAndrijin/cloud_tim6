@@ -9,6 +9,7 @@ import { CognitoUserPool, CognitoUserAttribute } from 'amazon-cognito-identity-j
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptorService } from './jwt-interceptor.service';
 import { UserMainComponent } from './user-main/user-main.component';
+import { InviteFamilyMemberComponent } from './invite-family-member/invite-family-member.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { UserMainComponent } from './user-main/user-main.component';
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    UserMainComponent
+    UserMainComponent,
+    InviteFamilyMemberComponent
   ],
   imports: [
     BrowserModule,
