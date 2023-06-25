@@ -10,8 +10,11 @@ provider:
   stage: dev
 
 functions:
-  hello:
+  hello_from_other_func:
     handler: handler.hello
+    package:
+      patterns:
+        - 'handler.py'
     events:
       - http:
           path: hello
@@ -86,7 +89,7 @@ resources:
             DeveloperOnlyAttribute: false
             Mutable: true
             Name: preferred_username
-          - AttributeDataType: String 
+          - AttributeDataType: String
             DeveloperOnlyAttribute: false
             Mutable: true
             Name: birthdate
@@ -94,7 +97,7 @@ resources:
         # EmailVerificationMessage: Please click the link below to verify your email address. {####} is your verification code.
         # SmsVerificationMessage: Your verification code for our app is {####}
         # MfaConfiguration: ON
-        EmailConfiguration: 
+        EmailConfiguration:
           EmailSendingAccount: COGNITO_DEFAULT
 
     CognitoUserPoolClient:
@@ -106,16 +109,16 @@ resources:
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         TokenValidityUnits:
-          AccessToken: minutes 
-          IdToken: minutes 
+          AccessToken: minutes
+          IdToken: minutes
           RefreshToken: days
         AccessTokenValidity: 30
         IdTokenValidity: 60
         RefreshTokenValidity: 10
         DefaultRedirectURI: http://localhost:4200/
-        CallbackURLs: 
+        CallbackURLs:
           - http://localhost:4200/
-        LogoutURLs: 
+        LogoutURLs:
           - http://localhost:4200/login
         SupportedIdentityProviders:
           - COGNITO
@@ -140,16 +143,16 @@ resources:
         UserPoolId: !Ref CognitoUserPool
 
 
-    # CognitoApiGatewayAuthorizer:
-    #   Type: AWS::ApiGateway::Authorizer
-    #   Properties:
-    #     RestApiId:
-    #       Ref: ApiGatewayRestApi
-    #     Name: MyApiAuthorizer
-    #     Type: COGNITO_USER_POOLS
-    #     IdentitySource: method.request.header.Authorization
-    #     ProviderARNs:
-    #       - Fn::GetAtt: [CognitoUserPool, Arn]
+    CognitoApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Name: MyApiAuthorizer
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        ProviderARNs:
+          - Fn::GetAtt: [CognitoUserPool, Arn]
 
     ApiGatewayAuthorizer:
       DependsOn:

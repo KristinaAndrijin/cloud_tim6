@@ -48,27 +48,30 @@ export class LoginComponent implements OnInit{
       var cognitoUser = new CognitoUser(userData);
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
-          console.log("slay");
+          console.log("login uspesno");
           const accessToken = result.getAccessToken().getJwtToken();
           console.log(result.getIdToken().getJwtToken());
           this.jwtService.setToken(result.getIdToken().getJwtToken());
-          // console.log('Access Token:', accessToken);
-          // alert("slay")
+          this.helloService.sendHello().subscribe({
+            next: result => {
+              console.log("hello stigao")
+              alert(result.message);
+              // console.log(result.event);
+              console.log(result);
+            },
+            error: e =>
+            {console.log("no")}
+          })
+          console.log('Access Token:', accessToken);
+          alert("slay")
           // this.router.navigate(["dashboard"])
         },
         onFailure: (err) => {
+          console.log("login neuspesna");
           alert(err.message || JSON.stringify(err));
           this.isLoading = false;
         },
       });
-      this.helloService.sendHello().subscribe({
-        next: result => {
-          alert(result.message);
-          console.log(result);
-        },
-        error: e =>
-        {console.log(e.message)}
-      })
   }
 
   check(control: AbstractControl) {
