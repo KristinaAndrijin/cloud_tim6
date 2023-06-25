@@ -17,6 +17,19 @@ provider:
       Resource:
         - arn:aws:cognito-idp:eu-central-1:275505252693:userpool/eu-central-1_JTv6FBTKX
 
+    - Effect: Allow
+      Action:
+        - sns:Publish
+        - sns:Subscribe
+      Resource:
+        - arn:aws:sns:eu-central-1:275505252693:SNSTopic
+
+    - Effect: Allow
+      Action:
+        - ses:*
+      Resource: 
+        - arn:aws:ses:eu-central-1:275505252693:identity/aws.tim6@gmail.com
+
 
 functions:
   hello_from_other_func:
@@ -48,6 +61,40 @@ functions:
           #   type: COGNITO_USER_POOLS
           #   authorizerId:
           #     Ref: ApiGatewayAuthorizer
+
+  publish:
+    handler: sns.publish
+    package:
+      patterns:
+        - 'sns.py'
+    events:
+      - http:
+          path: publish
+          method: GET
+          cors: true
+
+  subscribe:
+    handler: sns.subscribe
+    package:
+      patterns:
+        - 'sns.py'
+    events:
+      - http:
+          path: subscribe
+          method: GET
+          cors: true
+
+  sendEmail:
+    handler: ses.send_email
+    package:
+      patterns:
+        - 'ses.py'
+    events:
+      - http:
+          path: send-email
+          method: POST
+          cors: true
+
 resources:
   Resources:
     projekat6:
@@ -190,4 +237,21 @@ resources:
         Type: COGNITO_USER_POOLS
         ProviderARNs:
           - Fn::GetAtt: [CognitoUserPool, Arn]
+
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: SNSTopic
+
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: aws.tim6@gmail.com
+        Protocol: email
+        TopicArn: {"Ref": "SNSTopic"}
+
+    SESIdentity:
+      Type: AWS::SES::EmailIdentity
+      Properties: 
+        EmailIdentity: aws.tim6@gmail.com
 

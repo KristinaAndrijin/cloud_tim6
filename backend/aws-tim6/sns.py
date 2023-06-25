@@ -5,7 +5,7 @@ import boto3
 sns_client = boto3.client('sns')
 
 # Specify the SNS topic ARN
-topic_arn = 'arn:aws:sns:eu-central-1:275505252693:ProbaTopic'
+topic_arn = 'arn:aws:sns:eu-central-1:275505252693:SNSTopic'
 
 # Specify the message to publish
 message = 'Hello pls radi!'
