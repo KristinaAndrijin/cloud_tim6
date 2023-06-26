@@ -12,7 +12,7 @@ export class UserMainComponent implements OnInit {
 
   albums: any[] = [];
 
-  constructor(private filesService: FilesService, private router: Router, private sharedDataService: SharedDataService) { }
+  constructor(private filesService: FilesService, private router: Router) { }
 
   ngOnInit(): void {
     this.albums = this.filesService.getAlbums();
@@ -20,7 +20,6 @@ export class UserMainComponent implements OnInit {
 
   logClickedItem(albumName: string) {
     console.log("Clicked item: " + albumName);
-    this.sharedDataService.setCurrentAlbumName(albumName);
     this.router.navigate(["explorer"]);
   }
 
