@@ -10,6 +10,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptorService } from './jwt-interceptor.service';
 import { UserMainComponent } from './user-main/user-main.component';
 import { InviteFamilyMemberComponent } from './invite-family-member/invite-family-member.component';
+import { FamilyRegistrationComponent } from './family-registration/family-registration.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { InviteFamilyMemberComponent } from './invite-family-member/invite-famil
     LoginComponent,
     RegistrationComponent,
     UserMainComponent,
-    InviteFamilyMemberComponent
+    InviteFamilyMemberComponent,
+    FamilyRegistrationComponent
   ],
   imports: [
     BrowserModule,

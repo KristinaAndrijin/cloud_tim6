@@ -1,1 +1,15 @@
-<p>invite-family-member works!</p>
+<div class="div">
+    <h1> You can invite other users to use our app here. Input the email address of the person you want to invite </h1>
+    <form
+  [formGroup]="inviteForm" 
+  (ngSubmit)="inviteUser()"
+  >
+      <label>Input email address: </label><input class="element" type="email" formControlName="email">
+      <br>
+      <div *ngIf="inviteForm.hasError('validEmail')">
+        Email not in the right format
+      </div>
+      <br>
+      <button type="submit" (keydown.enter)="inviteUser()" [disabled]="isDisabled">Invite</button>
+  </form>
+  </div>

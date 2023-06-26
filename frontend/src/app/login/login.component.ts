@@ -52,16 +52,16 @@ export class LoginComponent implements OnInit{
           const accessToken = result.getAccessToken().getJwtToken();
           console.log(result.getIdToken().getJwtToken());
           this.jwtService.setToken(result.getIdToken().getJwtToken());
-          this.helloService.sendHello().subscribe({
-            next: result => {
-              // console.log("hello stigao")
-              alert(result.message);
-              // console.log(result.event);
-              // console.log(result);
-            },
-            error: e =>
-            {console.log("no")}
-          })
+          // this.helloService.sendHello().subscribe({
+          //   next: result => {
+          //     // console.log("hello stigao")
+          //     // alert(result.message);
+          //     // console.log(result.event);
+          //     // console.log(result);
+          //   },
+          //   error: e =>
+          //   {console.log("no")}
+          // })
           console.log('Access Token:', accessToken);
           // alert("slay")
           this.router.navigate(["main"]);

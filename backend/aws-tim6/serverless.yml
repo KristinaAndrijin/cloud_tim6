@@ -30,6 +30,19 @@ provider:
       Resource: 
         - arn:aws:ses:eu-central-1:275505252693:identity/aws.tim6@gmail.com
 
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [InvitationTable, Arn]
+        # add other tables here using the same sintax
+        # InvitationTable is resource name, not table name!
 
 functions:
   hello_from_other_func:
@@ -61,6 +74,52 @@ functions:
           #   type: COGNITO_USER_POOLS
           #   authorizerId:
           #     Ref: ApiGatewayAuthorizer
+
+  confirm_user:
+    handler: cognito-users.confirm_user
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: confirmUser
+          method: POST
+          cors: true
+          # authorizer:
+          #   type: COGNITO_USER_POOLS
+          #   authorizerId:
+          #     Ref: ApiGatewayAuthorizer
+
+  delete_user:
+    handler: cognito-users.delete_user
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: delete_user
+          method: POST
+          cors: true
+          # authorizer:
+          #   type: COGNITO_USER_POOLS
+          #   authorizerId:
+          #     Ref: ApiGatewayAuthorizer
+
+
+  post_invitation:
+    handler: family-invite.post_invitation
+    package:
+      patterns:
+        - 'family-invite.py'
+    events:
+      - http:
+          path: post_invitation
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 
   publish:
     handler: sns.publish
@@ -254,4 +313,23 @@ resources:
       Type: AWS::SES::EmailIdentity
       Properties: 
         EmailIdentity: aws.tim6@gmail.com
+
+
+    InvitationTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: invitations
+        AttributeDefinitions:
+          - AttributeName: inviter
+            AttributeType: S
+          - AttributeName: invitee
+            AttributeType: S
+        KeySchema:
+          - AttributeName: inviter
+            KeyType: HASH
+          - AttributeName: invitee
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 

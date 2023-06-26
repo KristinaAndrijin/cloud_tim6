@@ -25,3 +25,33 @@ def get_users(event, context):
         return {"statusCode": 200, "body": json.dumps(body)}
     except Exception as e:
         return {"statusCode": 500, "body": str(e)}
+    
+    
+def confirm_user(event, context):
+    try:
+        response = client.admin_confirm_sign_up(
+            UserPoolId=user_pool_id,
+            Username="kristinaproba"
+        )
+        body = {
+            "message": response,
+            "input": event,
+        }
+        return {"statusCode": 200, "body": json.dumps(body)}
+    except Exception as e:
+        return {"statusCode": 500, "body": str(e)}
+    
+    
+def delete_user(event, context):
+    try:
+        response = client.admin_delete_user(
+            UserPoolId=user_pool_id,
+            Username="kristinaproba"
+        )
+        body = {
+            "message": response,
+            "input": event,
+        }
+        return {"statusCode": 200, "body": json.dumps(body)}
+    except Exception as e:
+        return {"statusCode": 500, "body": str(e)}
