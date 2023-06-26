@@ -12,6 +12,9 @@ import { UserMainComponent } from './user-main/user-main.component';
 import { InviteFamilyMemberComponent } from './invite-family-member/invite-family-member.component';
 import { FamilyRegistrationComponent } from './family-registration/family-registration.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { ExplorerComponent } from './explorer/explorer.component';
+import { DetailsComponent } from './details/details.component';
+import { UploadComponent } from './upload/upload.component';
 
 
 @NgModule({
@@ -22,7 +25,10 @@ import { NavbarComponent } from './navbar/navbar.component';
     UserMainComponent,
     InviteFamilyMemberComponent,
     FamilyRegistrationComponent,
-    NavbarComponent
+    NavbarComponent,
+    ExplorerComponent,
+    DetailsComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
