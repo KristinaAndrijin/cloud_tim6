@@ -17,5 +17,13 @@ export class JwtService {
     sessionStorage.clear();
   }
 
+  getCurrentUser() {
+    return sessionStorage.getItem('username');
+  }
+
+  setCurrentUser(user: string) {
+    sessionStorage.setItem('username', user);
+  }
+
   constructor() { }
 }

@@ -6,7 +6,8 @@
       (ngSubmit)="onSignup()"
     >
 
-        <input class="element" type="text"  formControlName="inviter_username" placeholder="Invite Username" name="inviter_username" id="inviter_username" [disabled]="isDisabledU">
+        <label class="element">Inviter: {{inviter_username}}</label>
+        <br><br>
 
         <input class="element" type="text"  formControlName="fname" placeholder="Enter First name" name="fname" id="fname" required>
         <div *ngIf="registerForm.hasError('validName')">Name not in the right format</div>

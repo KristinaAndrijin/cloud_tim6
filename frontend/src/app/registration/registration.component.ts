@@ -136,7 +136,7 @@ export class RegistrationComponent implements OnInit{
     const isUsernameValid = letterAndNumbersRegex.test(username?.value);
     const birthdate = control.get('birthdate');
     const isBirthdateValid = birthdate?.value != '';
-    if (isValidEmail && isValidPassword && isValidName && isValidSurname && isPhoneValid && isUsernameValid) {
+    if (isValidEmail /*&& isValidPassword*/ && isValidName && isValidSurname && isPhoneValid && isUsernameValid) {
       this.isDisabled = false;
     } else {
       this.isDisabled = true;

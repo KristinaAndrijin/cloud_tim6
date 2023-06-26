@@ -32,7 +32,6 @@ export class FamilyRegistrationComponent implements OnInit {
       // this.activate(token);
     });
     this.registerForm = new FormGroup({
-      inviter_username: new FormControl(this.inviter_username),
       email: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
       username: new FormControl('', Validators.required),
@@ -108,7 +107,7 @@ export class FamilyRegistrationComponent implements OnInit {
     const isUsernameValid = letterAndNumbersRegex.test(username?.value);
     const birthdate = control.get('birthdate');
     const isBirthdateValid = birthdate?.value != '';
-    if (isValidEmail && isValidPassword && isValidName && isValidSurname && isPhoneValid && isUsernameValid) {
+    if (isValidEmail /*&& isValidPassword*/ &&  isValidName && isValidSurname && isPhoneValid && isUsernameValid) {
       this.isDisabled = false;
     } else {
       this.isDisabled = true;

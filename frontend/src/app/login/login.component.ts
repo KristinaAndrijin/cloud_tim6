@@ -49,6 +49,9 @@ export class LoginComponent implements OnInit{
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
           console.log("login uspesno");
+          this.jwtService.setCurrentUser(this.username);
+          let c = this.jwtService.getCurrentUser();
+          console.log(c);
           const accessToken = result.getAccessToken().getJwtToken();
           console.log(result.getIdToken().getJwtToken());
           this.jwtService.setToken(result.getIdToken().getJwtToken());
@@ -81,7 +84,7 @@ export class LoginComponent implements OnInit{
     const isValidPassword = passwordRegex.test(password?.value);
     const cmail = control.get('username');
     const isValidUsername = usernameRegex.test(cmail?.value);
-    if (isValidUsername && isValidPassword) {
+    if (isValidUsername /*&& isValidPassword*/) {
       this.isDisabled = false;
     } else {
       this.isDisabled = true;
