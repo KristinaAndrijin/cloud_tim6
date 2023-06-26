@@ -1,1 +1,10 @@
-<p>explorer works!</p>
+<div class="list-container">
+  <div class="album-list">
+      <h1 id="album-name">ime albuma lol</h1>
+      <div *ngFor="let album of albums" class="album-item" (click)="logClickedItem(album.name)">
+        <span class="album-name">{{ album.name }}</span>
+        <span class="album-owner">Owner: {{ album.owner }}</span>
+      </div>
+    </div>
+  </div>
+  
