@@ -41,8 +41,16 @@ provider:
         - dynamodb:DeleteItem
       Resource:
         - "Fn::GetAtt": [InvitationTable, Arn]
+        - "Fn::GetAtt": [filesMetadata, Arn]
         # add other tables here using the same sintax
         # InvitationTable is resource name, not table name!
+
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource:
+        - arn:aws:s3:::projekat6
+
 
 functions:
   hello_from_other_func:
