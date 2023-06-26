@@ -2,12 +2,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 40px;
+  margin-top: 26px;
 }
 
-h1{
+.list-header {
+  width: 80vw;
+}
+
+h1#album-name {
   font-size: 28px;
-  align-self: flex-start;
+  margin-bottom: 10px;
 }
 
 .album-list {

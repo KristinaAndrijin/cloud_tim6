@@ -19,7 +19,7 @@ export class ExplorerComponent {
 
   logClickedItem(albumName: string) {
     console.log("Clicked item: " + albumName);
-    this.router.navigate(["explorer"]);
+    this.router.navigate(["details"]);
   }
 
 }
