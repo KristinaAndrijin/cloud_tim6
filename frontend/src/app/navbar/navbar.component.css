@@ -1,0 +1,26 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #af209a;
+    color: white;
+    padding: 16px;
+  }
+  
+  .left {
+    cursor: pointer;
+  }
+  
+  .right {
+    cursor: pointer;
+  }
+  
+  .right {
+    margin-right: 10px;
+  }
+
+  .logout
+  {
+    margin-left: 20px;
+  }
+  

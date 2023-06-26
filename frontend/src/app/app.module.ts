@@ -11,6 +11,7 @@ import { JwtInterceptorService } from './jwt-interceptor.service';
 import { UserMainComponent } from './user-main/user-main.component';
 import { InviteFamilyMemberComponent } from './invite-family-member/invite-family-member.component';
 import { FamilyRegistrationComponent } from './family-registration/family-registration.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { FamilyRegistrationComponent } from './family-registration/family-regist
     RegistrationComponent,
     UserMainComponent,
     InviteFamilyMemberComponent,
-    FamilyRegistrationComponent
+    FamilyRegistrationComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

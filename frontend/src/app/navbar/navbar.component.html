@@ -1,0 +1,13 @@
+<nav>
+    <div class="left" (click)="goToMainPage()">
+      Tim 6 Cloud
+    </div>
+    <div class="middle" *ngIf="currentAlbum">
+        Current album: {{ currentAlbum }}
+      </div>
+    <div class="right">
+      <span class="invite">Invite Family Member</span>
+      <span class="logout" (click)="logout()">Log out</span>
+    </div>
+  </nav>
+  
