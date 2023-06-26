@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { SharedDataService } from './shared-data.service';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +10,16 @@ import { Router, NavigationEnd } from '@angular/router';
 export class AppComponent {
   title = 'Tim 6 cloud';
 
-  showNavbar: boolean = false;
-  currentAlbumName: string = '';
+  ngOnInit() {
+    this.sharedDataService.currentAlbumName$.subscribe(albumName => {
+      this.currentAlbumName = albumName;
+    });
+  }
 
-  constructor(private router: Router) {
+  showNavbar: boolean = false;
+  currentAlbumName: string | null = null;
+
+  constructor(private router: Router, private sharedDataService : SharedDataService) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         

@@ -10,7 +10,7 @@ import { JwtService } from '../jwt.service';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  @Input() currentAlbum: string = '';
+  @Input() currentAlbum: string|null = '';
   
   constructor(private router: Router, private jwtService: JwtService) {}
 
