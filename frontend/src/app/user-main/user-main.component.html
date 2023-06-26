@@ -1,6 +1,8 @@
-<div class="album-list">
-  <div *ngFor="let album of albums" class="album-item">
-    <div class="album-name">{{ album.name }}</div>
-    <div class="album-owner">Owner: {{ album.owner }}</div>
+<div class="list-container">
+  <div class="album-list">
+    <div *ngFor="let album of albums" class="album-item" (click)="logClickedItem(album.name)">
+      <span class="album-name">{{ album.name }}</span>
+      <span class="album-owner">Owner: {{ album.owner }}</span>
+    </div>
   </div>
 </div>
