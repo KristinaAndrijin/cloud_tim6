@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { environment } from 'src/environments/environment';
 import { JwtService } from '../jwt.service';
+import { AlbumService } from '../backend_services/album.service';
 
 @Component({
   selector: 'app-user-main',
@@ -11,7 +12,8 @@ import { JwtService } from '../jwt.service';
 })
 export class UserMainComponent implements OnInit {
 
-  constructor(private router: Router, private jwtService: JwtService) {}
+  constructor(private router: Router, private jwtService: JwtService, private album:AlbumService) {
+  }
 
   ngOnInit(): void {
   }
@@ -26,6 +28,10 @@ export class UserMainComponent implements OnInit {
     cognitoUser?.signOut();
     this.jwtService.logout();
     this.router.navigate(['']).then(()=>{location.reload();});
+  }
+
+  create_album(){
+    this.album.create_album("test123").subscribe();
   }
 
 }

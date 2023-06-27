@@ -115,7 +115,6 @@ functions:
           #   authorizerId:
           #     Ref: ApiGatewayAuthorizer
 
-
   post_invitation:
     handler: family-invite/post_invitation.post_invitation
     package:
@@ -204,6 +203,23 @@ functions:
           path: send-email
           method: POST
           cors: true
+          
+
+  ################## ALBUMI ####################
+  create_album:
+    handler: album/create_album.create_album
+    package:
+      patterns:
+        - 'album/create_album.py'
+    events:
+      - http:
+          path: create_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 
 resources:
   Resources:
