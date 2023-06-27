@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -15,17 +16,24 @@ import { MatIconModule } from '@angular/material/icon';
 export class ExplorerComponent {
   albums: any[] = [];
   files: any[] = [];
+  albumName: string = "";
 
-  constructor(private filesService: FilesService, private router: Router) { }
+  constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.albums = this.filesService.getAlbums();
     this.files = this.filesService.getFiles();
+    this.route.queryParams.subscribe(params => {
+      this.albumName = params['album'];
+    });
   }
 
-  logClickedItem(albumName: string) {
-    console.log("Clicked item: " + albumName);
-    this.router.navigate(["details"]);
+  navigateToExplorer(albumName: string) {
+    this.router.navigate(['explorer'], { queryParams: { album: albumName } });
+  }
+
+  navigateToDetails(fileName: string) {
+    this.router.navigate(['details'], { queryParams: { file: fileName }} );
   }
 
   showAlbumOptions(event: MouseEvent) {

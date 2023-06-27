@@ -4,7 +4,7 @@
     <button class="create-album" (click)="create_album()">create album</button>
   </div>
   <div class="album-list">
-    <div *ngFor="let album of albums" class="album-item" (click)="logClickedItem(album.name)">
+    <div *ngFor="let album of albums" class="album-item" (click)="navigateToExplorer(album.name)">
       <span class="album-name">{{ album.name }}</span>
       <span class="album-owner">Owner: {{ album.owner }}</span>
     </div>
