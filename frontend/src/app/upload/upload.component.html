@@ -1,1 +1,17 @@
-<p>upload works!</p>
+<!-- upload.component.html -->
+<div class="upload-container">
+    <div class="form-group">
+      <label for="fileInput">Select File:</label>
+      <input type="file" id="fileInput" (change)="onFileSelected($event)">
+    </div>
+    <div class="form-group">
+      <label for="descriptionInput">Description:</label>
+      <textarea id="descriptionInput" [(ngModel)]="description"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="tagsInput">Tags (separate with comma):</label>
+      <textarea id="tagsInput" [(ngModel)]="tags"></textarea>
+    </div>
+    <button class="submit-button" (click)="uploadFile()">Submit</button>
+  </div>
+  
