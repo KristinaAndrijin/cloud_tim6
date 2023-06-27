@@ -33,6 +33,7 @@ button {
     font-size: 14px;
     width: 50%;
     vertical-align: top;
+    border-radius: 8px;
   }
   
   textarea {
