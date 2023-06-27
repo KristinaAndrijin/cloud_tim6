@@ -31,7 +31,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     UserMainComponent,
     InviteFamilyMemberComponent,
     FamilyRegistrationComponent,
-    ResolveInvitationComponent
+    ResolveInvitationComponent,
     NavbarComponent,
     ExplorerComponent,
     DetailsComponent,
