@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FilesService } from '../backend_services/files.service';
 import { Router } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { StringDialogComponent } from '../string-dialog/string-dialog.component';
+import { AlbumService } from '../backend_services/album.service';
 
 
 
@@ -17,8 +19,9 @@ export class ExplorerComponent {
   albums: any[] = [];
   files: any[] = [];
   albumName: string = "";
+  dialogAlbumName: string ="";
 
-  constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService) { }
 
   ngOnInit(): void {
     this.albums = this.filesService.getAlbums();
@@ -34,14 +37,6 @@ export class ExplorerComponent {
 
   navigateToDetails(fileName: string) {
     this.router.navigate(['details'], { queryParams: { file: fileName }} );
-  }
-
-  showAlbumOptions(event: MouseEvent) {
-    event.stopPropagation();
-  }
-  
-  showFileOptions(event: MouseEvent) {
-    event.stopPropagation();
   }
 
   deleteAlbum(album: any) {
@@ -77,6 +72,31 @@ export class ExplorerComponent {
     let file_key = "kris/slay.omg"
     this.router.navigate(['permissions'], { queryParams: { file_key: file_key } });
   }
+  uploadFile(albumName: string) {
+    this.router.navigate(['upload'], { queryParams: { album: albumName } });
+  }
+
+  create_album(){
+    const dialogRef: MatDialogRef<StringDialogComponent> = this.dialog.open(StringDialogComponent, {
+      width: '450px',
+      data: this.dialogAlbumName
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log(result);
+        this.albumService.create_album(result).subscribe({
+          next: result => {
+            alert("Album kreiran!");
+            console.log(result);
+          },
+          error: e =>
+          {console.log(e)}
+        });
+      }
+    });
+    
+  } 
   
   
 
