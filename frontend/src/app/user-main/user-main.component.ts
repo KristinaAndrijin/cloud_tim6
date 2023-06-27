@@ -17,6 +17,7 @@ import { StringDialogComponent } from '../string-dialog/string-dialog.component'
 })
 export class UserMainComponent implements OnInit {
   dialogAlbumName: string ="";
+  currentAlbum: string = "";
 
   constructor(private filesService: FilesService, private router: Router, private jwtService: JwtService, private album:AlbumService, private dialog: MatDialog) {
   }
@@ -33,7 +34,7 @@ export class UserMainComponent implements OnInit {
 
   create_album(){
     const dialogRef: MatDialogRef<StringDialogComponent> = this.dialog.open(StringDialogComponent, {
-      width: '250px',
+      width: '300px',
       data: this.dialogAlbumName
     });
   
@@ -41,7 +42,9 @@ export class UserMainComponent implements OnInit {
       if (result) {
         // Handle the result (string) here
         console.log(result);
-        this.album.create_album(result).subscribe({
+        this.dialogAlbumName = result;
+        const albumName = this.currentAlbum + this.dialogAlbumName;
+        this.album.create_album(albumName).subscribe({
           next: result => {
             alert("Album kreiran!");
             console.log(result);
