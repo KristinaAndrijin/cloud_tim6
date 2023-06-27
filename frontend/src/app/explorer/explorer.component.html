@@ -1,9 +1,9 @@
 <div class="list-container">
     <div class="list-header">
-      <h1 id="album-name">ime albuma lol</h1>
+      <h1 id="album-name">{{ albumName }}</h1>
     </div>
     <div class="album-list">
-      <div *ngFor="let album of albums" class="album-item" (click)="logClickedItem(album.name)">
+      <div *ngFor="let album of albums" class="album-item" (click)="navigateToExplorer(album.name)">
         <span class="album-name">{{ album.name }}</span>
         <span class="album-owner">Owner: {{ album.owner }}</span>
         <button mat-icon-button class="album-options" [matMenuTriggerFor]="albumOptionsMenu">
@@ -18,7 +18,7 @@
           </button>
         </mat-menu>
       </div>
-      <div *ngFor="let file of files" class="file-item" (click)="logClickedItem(file.name)">
+      <div *ngFor="let file of files" class="file-item" (click)="navigateToDetails(file.name)">
         <span class="file-name">{{ file.name }}</span>
         <span class="file-owner">Owner: {{ file.owner }}</span>
         <span class="file-date">Date Uploaded: {{ file.dateUploaded }}</span>

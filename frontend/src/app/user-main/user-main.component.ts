@@ -26,9 +26,8 @@ export class UserMainComponent implements OnInit {
     this.albums = this.filesService.getAlbums();
   }
 
-  logClickedItem(albumName: string) {
-    console.log("Clicked item: " + albumName);
-    this.router.navigate(["explorer"]);
+  navigateToExplorer(albumName: string) {
+    this.router.navigate(['explorer'], { queryParams: { album: albumName } });
   }
 
   create_album(){
