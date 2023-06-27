@@ -44,8 +44,7 @@ h1#album-name {
 }
 
 .album-owner,
-.file-owner,
-.file-date {
+.file-middle {
   margin-top: 5px;
   text-align: center;
   flex-grow: 1;
@@ -55,4 +54,18 @@ h1#album-name {
 .file-options {
   margin-left: auto;
 }
+
+.file-name
+{
+  flex: 1;
+}
+
+.file-middle
+{
+  display: flex;
+  flex:3;
+  justify-content:space-between;
+  margin-right: 64px;
+}
+
 
