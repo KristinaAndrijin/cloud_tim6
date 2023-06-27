@@ -1,2 +1,29 @@
-<p>details works!</p>
-<h1 id="file-name">{{ fileName }}</h1>
+<div class="details-container">
+    <table class="details-table">
+      <tr>
+        <th>Name</th>
+        <td>{{ fileDetails.name }}</td>
+      </tr>
+      <tr>
+        <th>Format</th>
+        <td>{{ fileDetails.format }}</td>
+      </tr>
+      <tr>
+        <th>Size</th>
+        <td>{{ fileDetails.size }}</td>
+      </tr>
+      <tr>
+        <th>Upload Date</th>
+        <td>{{ fileDetails.uploadDate }}</td>
+      </tr>
+      <tr>
+        <th>Description</th>
+        <td>{{ fileDetails.description }}</td>
+      </tr>
+      <tr>
+        <th>Tags</th>
+        <td>{{ fileDetails.tags.join(', ') }}</td>
+      </tr>
+    </table>
+  </div>
+  
