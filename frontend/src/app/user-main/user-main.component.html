@@ -1,7 +1,7 @@
 <div class="list-container">
   <div class="list-header">
     <h1>Albums:</h1>
-    <button class="create-album" (click)="create_album()">create test album</button>
+    <button class="create-album" (click)="create_album()">create album</button>
   </div>
   <div class="album-list">
     <div *ngFor="let album of albums" class="album-item" (click)="logClickedItem(album.name)">
