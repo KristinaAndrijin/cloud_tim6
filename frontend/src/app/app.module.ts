@@ -24,6 +24,7 @@ import { StringDialogComponent } from './string-dialog/string-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { PermissionsComponent } from './permissions/permissions.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { MatInputModule } from '@angular/material/input';
     ExplorerComponent,
     DetailsComponent,
     UploadComponent,
-    StringDialogComponent
+    StringDialogComponent,
+    PermissionsComponent
   ],
   imports: [
     BrowserModule,

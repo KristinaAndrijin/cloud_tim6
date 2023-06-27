@@ -49,7 +49,8 @@ export class ExplorerComponent {
   }
   
   editAlbumPermissions(album: any) {
-    // Handle edit album permissions functionality
+    let album_key = "kris/slay"
+    this.router.navigate(['permissions'], { queryParams: { album_key: album_key } });
   }
   
   editFile(file: any) {
@@ -70,6 +71,11 @@ export class ExplorerComponent {
   
   deleteFile(file: any) {
     // Handle delete file functionality
+  }
+
+  editFilePermissions(file: any) {
+    let file_key = "kris/slay.omg"
+    this.router.navigate(['permissions'], { queryParams: { file_key: file_key } });
   }
   
   

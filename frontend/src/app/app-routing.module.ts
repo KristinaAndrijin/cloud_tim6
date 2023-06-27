@@ -8,7 +8,8 @@ import { FamilyRegistrationComponent } from './family-registration/family-regist
 import { ResolveInvitationComponent } from './resolve-invitation/resolve-invitation.component';
 import { ExplorerComponent } from './explorer/explorer.component';
 import { DetailsComponent } from './details/details.component';
-import {UploadComponent} from './upload/upload.component'
+import {UploadComponent} from './upload/upload.component';
+import { PermissionsComponent} from './permissions/permissions.component';
 
 const routes: Routes = [
   {path: "", component: LoginComponent},
@@ -20,7 +21,8 @@ const routes: Routes = [
   {path: "resolve-invitation", component: ResolveInvitationComponent},
   {path: "explorer", component: ExplorerComponent},
   {path: "details", component: DetailsComponent},
-  {path: "upload", component:UploadComponent}
+  {path: "upload", component:UploadComponent},
+  {path: "permissions", component: PermissionsComponent}
 ];
 
 @NgModule({
