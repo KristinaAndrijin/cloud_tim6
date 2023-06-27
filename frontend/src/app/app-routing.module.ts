@@ -5,6 +5,8 @@ import { RegistrationComponent } from './registration/registration.component';
 import { UserMainComponent } from './user-main/user-main.component';
 import { InviteFamilyMemberComponent } from './invite-family-member/invite-family-member.component';
 import { FamilyRegistrationComponent } from './family-registration/family-registration.component'; 
+import { ResolveInvitationComponent } from './resolve-invitation/resolve-invitation.component';
+
 
 const routes: Routes = [
   {path: "", component: LoginComponent},
@@ -12,7 +14,9 @@ const routes: Routes = [
   {path: "registration", component: RegistrationComponent},
   {path: "main", component: UserMainComponent},
   {path: "invite", component: InviteFamilyMemberComponent},
-  {path: "family-registration", component: FamilyRegistrationComponent}
+  {path: "family-registration", component: FamilyRegistrationComponent},
+  {path: "resolve-invitation", component: ResolveInvitationComponent}
+
 ];
 
 @NgModule({

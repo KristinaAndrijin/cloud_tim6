@@ -6,7 +6,7 @@
       (ngSubmit)="onSignup()"
     >
 
-        <label class="element">Inviter: {{inviter_username}}</label>
+        <label>Inviter: </label><label class="element">{{inviter_username}} </label>
         <br><br>
 
         <input class="element" type="text"  formControlName="fname" placeholder="Enter First name" name="fname" id="fname" required>
@@ -19,20 +19,17 @@
 
         <input class="element" type="text"  formControlName="username" placeholder="Enter Username" name="username" id="username" required>
         <div *ngIf="registerForm.hasError('validUsername')">Username not in the right format</div>
-        <br>
+        <br><br>
 
-        <input class="element" type="text"  formControlName="email" placeholder="Enter Email" name="email" id="email" required>
-        <div *ngIf="registerForm.hasError('validEmail')">
-          Email not in the right format
-        </div>
-        <br>
+        <label>Email: </label><label class="element">{{invitee_email}} </label>
+        <br><br><br>
 
         <input class="element" type="text"   formControlName="mobileNo" placeholder="Enter Mobile number" name="mobileNo" id="mobileNo" required>
         <div *ngIf="registerForm.hasError('validPN')">Number not in the right format</div>
         <br>
 
         <br/>
-        <label for="birthdate"><b>Enter birthdate: </b></label>
+        <label for="birthdate">Enter birthdate: </label>
         <input class="element" type="date"  formControlName="birthdate" placeholder="Enter Birthdate" name="birthdate" id="birthdate" required>
         <br/>
         <div *ngIf="registerForm.hasError('validB')">Choose date!!!</div>
