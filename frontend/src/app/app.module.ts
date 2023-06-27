@@ -26,6 +26,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { FormsModule } from '@angular/forms';
+import { AlbumDialogComponent } from './album-dialog/album-dialog.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { FormsModule } from '@angular/forms';
     DetailsComponent,
     UploadComponent,
     StringDialogComponent,
-    PermissionsComponent
+    PermissionsComponent,
+    AlbumDialogComponent
   ],
   imports: [
     BrowserModule,

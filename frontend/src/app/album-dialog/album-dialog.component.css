@@ -1,0 +1,36 @@
+.dialog-container {
+    padding: 16px;
+    justify-content: center;
+}
+
+li {
+    display: flex;
+    gap: 12px;
+    margin: 4px;
+    cursor: pointer;
+}
+
+li:hover {
+    background-color: #eaeaea;
+}
+
+.album-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+#album-name {
+    flex: 1;
+}
+
+#album-owner {
+    flex: 1;
+}
+
+ul {
+    padding: 0;
+    max-height: 350px;
+    overflow-y: auto;
+}

@@ -7,6 +7,8 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { StringDialogComponent } from '../string-dialog/string-dialog.component';
 import { AlbumService } from '../backend_services/album.service';
+import { AlbumDialogComponent } from '../album-dialog/album-dialog.component';
+
 
 
 
@@ -96,7 +98,20 @@ export class ExplorerComponent {
       }
     });
     
-  } 
+  }
+
+  openAlbumDialog(file: any) {
+    const dialogRef = this.dialog.open(AlbumDialogComponent, {
+      width: '450px',
+      data: this.albums
+    });
+  
+    dialogRef.afterClosed().subscribe(album => {
+      if (album) {
+        console.log(album.name);
+      }
+    });
+  }
   
   
 
