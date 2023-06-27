@@ -1,12 +1,11 @@
-<div class="user-main">
-    <h1>Menu</h1>
-  
-    <ul>
-      <li>
-        <a href="invite">Invite family member</a>
-      </li>
-  
-    </ul>
-    <button (click)="logout()">Logout</button>
+<div class="list-container">
+  <div class="list-header">
+    <h1>Albums:</h1>
   </div>
-  
+  <div class="album-list">
+    <div *ngFor="let album of albums" class="album-item" (click)="logClickedItem(album.name)">
+      <span class="album-name">{{ album.name }}</span>
+      <span class="album-owner">Owner: {{ album.owner }}</span>
+    </div>
+  </div>
+</div>

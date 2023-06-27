@@ -12,6 +12,15 @@ import { UserMainComponent } from './user-main/user-main.component';
 import { InviteFamilyMemberComponent } from './invite-family-member/invite-family-member.component';
 import { FamilyRegistrationComponent } from './family-registration/family-registration.component';
 import { ResolveInvitationComponent } from './resolve-invitation/resolve-invitation.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { ExplorerComponent } from './explorer/explorer.component';
+import { DetailsComponent } from './details/details.component';
+import { UploadComponent } from './upload/upload.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 
 @NgModule({
@@ -23,12 +32,20 @@ import { ResolveInvitationComponent } from './resolve-invitation/resolve-invitat
     InviteFamilyMemberComponent,
     FamilyRegistrationComponent,
     ResolveInvitationComponent
+    NavbarComponent,
+    ExplorerComponent,
+    DetailsComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {
