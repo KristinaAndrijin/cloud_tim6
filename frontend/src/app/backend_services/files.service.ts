@@ -22,6 +22,15 @@ export class FilesService {
     { name: 'default', owner: 'Mirko' },
   ];
 
+  private fileDetails = {
+    name: "Dummy File",
+    format: "PDF",
+    size: "2.5 MB",
+    uploadDate: "2023-06-26",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    tags: ["tag1", "tag2", "tag3"]
+  };
+
   private files = [
     { name: 'snake.png', owner: 'Mirko', dateUploaded: '2022-07-12' },
     { name: 'documentbralenale.xml', owner: 'Aleksandar Aleksandrovic', dateUploaded: '2022-06-28' },
@@ -34,5 +43,9 @@ export class FilesService {
 
   getFiles() {
     return this.files;
+  }
+
+  getFileDetails() {
+    return this.fileDetails;
   }
 }
