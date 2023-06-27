@@ -32,7 +32,7 @@ export class UserMainComponent implements OnInit {
 
   create_album(){
     const dialogRef: MatDialogRef<StringDialogComponent> = this.dialog.open(StringDialogComponent, {
-      width: '250px',
+      width: '450px',
       data: this.dialogAlbumName
     });
   
