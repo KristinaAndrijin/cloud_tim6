@@ -138,7 +138,7 @@ functions:
     events:
       - http:
           path: accept_invitation
-          method: POST
+          method: PUT
           cors: true
 
   confirm_invite:
@@ -149,7 +149,7 @@ functions:
     events:
       - http:
           path: confirm_invite
-          method: POST
+          method: PUT
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
@@ -164,7 +164,7 @@ functions:
     events:
       - http:
           path: disprove_invite
-          method: POST
+          method: PUT
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
@@ -215,6 +215,66 @@ functions:
       - http:
           path: create_album
           method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_albums_by_user:
+    handler: album/get_albums.get_albums_by_user
+    package:
+      patterns:
+        - 'album/get_albums.py'
+    events:
+      - http:
+          path: get_albums_by_user
+          method: GET
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_users_by_album:
+    handler: album/get_albums.get_users_by_album
+    package:
+      patterns:
+        - 'album/get_albums.py'
+    events:
+      - http:
+          path: get_users_by_album
+          method: GET
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  give_access_to_album_to_user:
+    handler: album/give_album_access.give_access_to_album_to_user
+    package:
+      patterns:
+        - 'album/give_album_access.py'
+    events:
+      - http:
+          path: give_access_to_album_to_user
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  remove_access_to_album_from_user:
+    handler: album/remove_album_access.remove_access_to_album_from_user
+    package:
+      patterns:
+        - 'album/remove_album_access.py'
+    events:
+      - http:
+          path: remove_access_to_album_from_user
+          method: PUT
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS

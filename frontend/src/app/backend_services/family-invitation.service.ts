@@ -18,7 +18,7 @@ export class FamilyInvitationService {
 
 
   accept_invitation(inviter:string, inviter_email:string, invitee: string, invitee_username:string):Observable<any> {
-    return this.http.post("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/accept_invitation",
+    return this.http.put("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/accept_invitation",
     {"inviter": inviter,
       "inviter_email": inviter_email,
       "invitee": invitee,
@@ -29,7 +29,7 @@ export class FamilyInvitationService {
   }
 
   confirm(invitee_email: string, invitee_username: string):Observable<any> {
-    return this.http.post("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/confirm_invite",
+    return this.http.put("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/confirm_invite",
     {"invitee_email": invitee_email,
       "invitee_username": invitee_username
     },
@@ -38,7 +38,7 @@ export class FamilyInvitationService {
   }
 
   disprove(invitee_email: string, invitee_username: string):Observable<any> {
-    return this.http.post("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/disprove_invite",
+    return this.http.put("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/disprove_invite",
     {"invitee_email": invitee_email,
       "invitee_username": invitee_username
     },
