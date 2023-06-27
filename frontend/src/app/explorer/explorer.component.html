@@ -1,48 +1,47 @@
 <div class="list-container">
-    <div class="list-header">
-      <h1 id="album-name">{{ albumName }}</h1>
+  <div class="list-header">
+    <h1 id="album-name">{{ albumName }}</h1>
+  </div>
+  <div class="album-list">
+    <div *ngFor="let album of albums" class="album-item">
+      <span class="album-name" (click)="navigateToExplorer(album.name)">{{ album.name }}</span>
+      <span class="album-owner">Owner: {{ album.owner }}</span>
+      <button mat-icon-button class="album-options" [matMenuTriggerFor]="albumOptionsMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #albumOptionsMenu="matMenu">
+        <button mat-menu-item (click)="deleteAlbum(album)">
+          Delete
+        </button>
+        <button mat-menu-item (click)="editAlbumPermissions(album)">
+          Permissions
+        </button>
+      </mat-menu>
     </div>
-    <div class="album-list">
-      <div *ngFor="let album of albums" class="album-item" (click)="navigateToExplorer(album.name)">
-        <span class="album-name">{{ album.name }}</span>
-        <span class="album-owner">Owner: {{ album.owner }}</span>
-        <button mat-icon-button class="album-options" [matMenuTriggerFor]="albumOptionsMenu">
-          <mat-icon>more_vert</mat-icon>
+    <div *ngFor="let file of files" class="file-item">
+      <span class="file-name" (click)="navigateToDetails(file.name)">{{ file.name }}</span>
+      <span class="file-owner">Owner: {{ file.owner }}</span>
+      <span class="file-date">Date Uploaded: {{ file.dateUploaded }}</span>
+      <button mat-icon-button class="file-options" [matMenuTriggerFor]="fileOptionsMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #fileOptionsMenu="matMenu">
+        <button mat-menu-item (click)="editFile(file)">
+          Edit
         </button>
-        <mat-menu #albumOptionsMenu="matMenu">
-          <button mat-menu-item (click)="deleteAlbum(album)">
-            Delete
-          </button>
-          <button mat-menu-item (click)="editAlbumPermissions(album)">
-            Permissions
-          </button>
-        </mat-menu>
-      </div>
-      <div *ngFor="let file of files" class="file-item" (click)="navigateToDetails(file.name)">
-        <span class="file-name">{{ file.name }}</span>
-        <span class="file-owner">Owner: {{ file.owner }}</span>
-        <span class="file-date">Date Uploaded: {{ file.dateUploaded }}</span>
-        <button mat-icon-button class="file-options" [matMenuTriggerFor]="fileOptionsMenu">
-          <mat-icon>more_vert</mat-icon>
+        <button mat-menu-item (click)="moveFile(file)">
+          Move
         </button>
-        <mat-menu #fileOptionsMenu="matMenu">
-          <button mat-menu-item (click)="editFile(file)">
-            Edit
-          </button>
-          <button mat-menu-item (click)="moveFile(file)">
-            Move
-          </button>
-          <button mat-menu-item (click)="downloadFile(file)">
-            Download
-          </button>
-          <button mat-menu-item (click)="addToAlbum(file)">
-            Add to Album
-          </button>
-          <button mat-menu-item (click)="deleteFile(file)">
-            Delete
-          </button>
-        </mat-menu>
-      </div>
+        <button mat-menu-item (click)="downloadFile(file)">
+          Download
+        </button>
+        <button mat-menu-item (click)="addToAlbum(file)">
+          Add to Album
+        </button>
+        <button mat-menu-item (click)="deleteFile(file)">
+          Delete
+        </button>
+      </mat-menu>
     </div>
   </div>
-  
+</div>
