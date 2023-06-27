@@ -19,7 +19,7 @@ export class UserMainComponent implements OnInit {
   dialogAlbumName: string ="";
   currentAlbum: string = "";
 
-  constructor(private filesService: FilesService, private router: Router, private jwtService: JwtService, private album:AlbumService, private dialog: MatDialog) {
+  constructor(private filesService: FilesService, private router: Router, private jwtService: JwtService) {
   }
   albums: any[] = [];
 
@@ -30,30 +30,5 @@ export class UserMainComponent implements OnInit {
   navigateToExplorer(albumName: string) {
     this.router.navigate(['explorer'], { queryParams: { album: albumName } });
   }
-
-  create_album(){
-    const dialogRef: MatDialogRef<StringDialogComponent> = this.dialog.open(StringDialogComponent, {
-      width: '450px',
-      data: this.dialogAlbumName
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Handle the result (string) here
-        console.log(result);
-        this.dialogAlbumName = result;
-        const albumName = this.currentAlbum + this.dialogAlbumName;
-        this.album.create_album(albumName).subscribe({
-          next: result => {
-            alert("Album kreiran!");
-            console.log(result);
-          },
-          error: e =>
-          {console.log(e)}
-        });
-      }
-    });
-    
-  } 
 
 }

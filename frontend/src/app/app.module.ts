@@ -24,6 +24,10 @@ import { StringDialogComponent } from './string-dialog/string-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { PermissionsComponent } from './permissions/permissions.component';
+import { FormsModule } from '@angular/forms';
+import { AlbumDialogComponent } from './album-dialog/album-dialog.component';
+
 
 @NgModule({
   declarations: [
@@ -38,7 +42,9 @@ import { MatInputModule } from '@angular/material/input';
     ExplorerComponent,
     DetailsComponent,
     UploadComponent,
-    StringDialogComponent
+    StringDialogComponent,
+    PermissionsComponent,
+    AlbumDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +57,8 @@ import { MatInputModule } from '@angular/material/input';
     BrowserAnimationsModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    FormsModule
   ],
   providers: [
     {

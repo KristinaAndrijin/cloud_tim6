@@ -20,6 +20,18 @@ export class FilesService {
     { name: 'default', owner: 'Mirko' },
     { name: 'smesno', owner: 'Mirko' },
     { name: 'default', owner: 'Mirko' },
+    { name: 'smesno', owner: 'Mirko' },
+    { name: 'default', owner: 'Mirko' },
+    { name: 'smesno', owner: 'Mirko' },
+    { name: 'default', owner: 'Mirko' },
+    { name: 'smesno', owner: 'Mirko' },
+    { name: 'default', owner: 'Mirko' },
+    { name: 'smesno', owner: 'Mirko' },
+    { name: 'default', owner: 'Mirko' },
+    { name: 'smesno', owner: 'Mirko' },
+    { name: 'default', owner: 'Mirko' },
+    { name: 'smesno', owner: 'Mirko' },
+    { name: 'default', owner: 'Mirko' },
   ];
 
   private fileDetails = {
@@ -47,5 +59,11 @@ export class FilesService {
 
   getFileDetails() {
     return this.fileDetails;
+  }
+
+  uploadFile(file: File | null, fileDescription: string, fileTags: string): void {
+    console.log("File:", file);
+    console.log("Description:", fileDescription);
+    console.log("Tags:", fileTags);
   }
 }

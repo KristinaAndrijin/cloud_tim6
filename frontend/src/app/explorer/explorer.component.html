@@ -14,7 +14,7 @@
           Delete
         </button>
         <button mat-menu-item (click)="editAlbumPermissions(album)">
-          Permissions
+          Edit Album Permissions
         </button>
       </mat-menu>
     </div>
@@ -31,19 +31,27 @@
         <button mat-menu-item (click)="editFile(file)">
           Edit
         </button>
-        <button mat-menu-item (click)="moveFile(file)">
+        <button mat-menu-item (click)="openAlbumDialog(file)">
           Move
         </button>
         <button mat-menu-item (click)="downloadFile(file)">
           Download
         </button>
-        <button mat-menu-item (click)="addToAlbum(file)">
+        <button mat-menu-item (click)="openAlbumDialog(file)">
           Add to Album
         </button>
         <button mat-menu-item (click)="deleteFile(file)">
           Delete
         </button>
+        <button mat-menu-item (click)="editFilePermissions(file)">
+          Edit File Permissions
+        </button>
       </mat-menu>
     </div>
   </div>
+  <div class="buttons">
+    <button class="create-album" (click)="create_album()">create an album</button>
+    <button class="upload" (click)="uploadFile(albumName)">upload a file</button>
+  </div>
+
 </div>
