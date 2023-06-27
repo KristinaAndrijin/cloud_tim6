@@ -57,6 +57,9 @@
 
 .list-header {
   width: 80vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 h1#album-name {
@@ -88,4 +91,10 @@ h1#album-name {
   margin-top: 5px;
   text-align: center;
   flex-grow: 1;
+}
+
+.create-album {
+  width: 200px;
+  top: 0;
+  right:0;
 }
