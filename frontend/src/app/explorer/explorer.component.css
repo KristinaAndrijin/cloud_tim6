@@ -20,7 +20,8 @@ h1#album-name {
   overflow-y: auto;
 }
 
-.album-item {
+.album-item,
+.file-item {
   display: flex;
   padding: 10px;
   border-bottom: 1px solid black;
@@ -29,13 +30,29 @@ h1#album-name {
   justify-content: space-between;
 }
 
-.album-name {
+.album-options,
+.file-options {
+  cursor: pointer;
+  margin-left: auto;
+  font-size: 20px;
+}
+
+.album-name,
+.file-name {
   font-weight: bold;
   cursor: pointer;
 }
 
-.album-owner {
+.album-owner,
+.file-owner,
+.file-date {
   margin-top: 5px;
   text-align: center;
   flex-grow: 1;
 }
+
+.album-options,
+.file-options {
+  margin-left: auto;
+}
+

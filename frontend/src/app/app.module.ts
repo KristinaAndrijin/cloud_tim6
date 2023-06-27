@@ -15,6 +15,11 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { ExplorerComponent } from './explorer/explorer.component';
 import { DetailsComponent } from './details/details.component';
 import { UploadComponent } from './upload/upload.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 
 @NgModule({
@@ -35,6 +40,10 @@ import { UploadComponent } from './upload/upload.component';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {
