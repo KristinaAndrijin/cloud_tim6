@@ -18,7 +18,7 @@ import { AlbumDialogComponent } from '../album-dialog/album-dialog.component';
   styleUrls: ['./explorer.component.css']
 })
 export class ExplorerComponent {
-  albums: any[] = [];
+  albums!: any;
   files: any[] = [];
   albumName: string = "";
   dialogAlbumName: string ="";
@@ -26,15 +26,17 @@ export class ExplorerComponent {
   constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService) { }
 
   ngOnInit(): void {
-    this.albums = this.filesService.getAlbums();
+    // console.log(this.albums);
+    // this.albums = this.filesService.getDummyAlbums();
     this.files = this.filesService.getFiles();
     this.route.queryParams.subscribe(params => {
       this.albumName = params['album'];
     });
+    this.getAlbums();
   }
 
   navigateToExplorer(albumName: string) {
-    this.router.navigate(['explorer'], { queryParams: { album: albumName } });
+    this.router.navigate(['explorer'], { queryParams: { album: albumName } }).then(()=>{location.reload();});
   }
 
   navigateToDetails(fileName: string) {
@@ -83,17 +85,24 @@ export class ExplorerComponent {
       width: '450px',
       data: this.dialogAlbumName
     });
-  
+    
+    let path = this.albumName.split('/');
+    let position = path.slice(1).join('/');
+    console.log(position);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log(result);
-        this.albumService.create_album(result).subscribe({
+        this.albumService.create_album(position + "/" + result).subscribe({
           next: result => {
             alert("Album kreiran!");
             console.log(result);
+            this.getAlbums();
           },
           error: e =>
-          {console.log(e)}
+          {
+            console.log(e)
+            alert(e?.error?.message || JSON.stringify(e));
+          }
         });
       }
     });
@@ -114,5 +123,34 @@ export class ExplorerComponent {
   }
   
   
+  getAlbums() {
+    let path = this.albumName.split('/');
+    let position = path.slice(1).join('/') + '/';
+    let back_albums = [{}];
+    this.filesService.getAlbums().subscribe(
+      {
+        next: result => {
+          console.log(result);
+          let albums_back = result.albums;
+          albums_back.forEach((element: string) => {
+            if (element.startsWith(this.albumName + '/')) {
+              let parts = element.split('/');
+              let owner = parts[0];
+              let album_name = parts.slice(1).join('/').replace(this.albumName, '');
+              let fancy_album_name = parts.slice(1).join('/').replace(position, '');
+              back_albums.push({ name: album_name, owner: owner, fancy_name: fancy_album_name });
+            }
+          });
+          // alert("Albums received!");
+          this.albums = back_albums;
+        },
+        error: err => {
+          console.log(err);
+          alert(err?.error?.message || JSON.stringify(err));
+        }
+      }
+    )
+    return [];
+  }
 
 }

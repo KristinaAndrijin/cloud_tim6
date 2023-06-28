@@ -24,11 +24,36 @@ export class UserMainComponent implements OnInit {
   albums: any[] = [];
 
   ngOnInit(): void {
-    this.albums = this.filesService.getAlbums();
+    this.getAlbums();
   }
 
   navigateToExplorer(albumName: string) {
     this.router.navigate(['explorer'], { queryParams: { album: albumName } });
+  }
+
+  getAlbums() {
+    let back_albums = [{}];
+    this.filesService.getAlbums().subscribe(
+      {
+        next: result => {
+          console.log(result);
+          let albums_back = result.albums;
+          albums_back.forEach((element: string) => {
+            let parts = element.split('/');
+            let owner = parts[0];
+            let album_name = parts.slice(1).join('/');
+            back_albums.push({ name: album_name, owner: owner });
+          });
+          // alert("Albums received!");
+          this.albums = back_albums;
+        },
+        error: err => {
+          console.log(err);
+          alert(err?.error?.message || JSON.stringify(err));
+        }
+      }
+    )
+    return [];
   }
 
 }
