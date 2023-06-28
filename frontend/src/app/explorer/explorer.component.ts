@@ -24,7 +24,7 @@ export class ExplorerComponent {
   albumName: string = "";
   dialogAlbumName: string ="";
 
-  constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService) { }
+  constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
 
   ngOnInit(): void {
     // console.log(this.albums);
@@ -64,8 +64,13 @@ export class ExplorerComponent {
   }
   
   editAlbumPermissions(album: any) {
-    let album_key = "kris/slay"
-    this.router.navigate(['permissions'], { queryParams: { album_key: album_key } });
+    let album_key = album.owner + '/' + album.name
+    console.log(album.name);
+    if (album.owner.split('/')[0] != this.jwtService.getCurrentUser()) {
+      alert('You cannot access permissions for this file');
+    } else {
+      this.router.navigate(['permissions'], { queryParams: { album_key: album_key } });
+    }
   }
   
   editFile(file: any) {
@@ -88,6 +93,7 @@ export class ExplorerComponent {
     // Handle delete file functionality
   }
 
+  // izvuci ime iz file key ??
   editFilePermissions(file: any) {
     let file_key = "kris/slay.omg"
     this.router.navigate(['permissions'], { queryParams: { file_key: file_key } });

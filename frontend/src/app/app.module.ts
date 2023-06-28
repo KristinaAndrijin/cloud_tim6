@@ -27,6 +27,8 @@ import { MatInputModule } from '@angular/material/input';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { FormsModule } from '@angular/forms';
 import { AlbumDialogComponent } from './album-dialog/album-dialog.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 
 @NgModule({
@@ -58,7 +60,9 @@ import { AlbumDialogComponent } from './album-dialog/album-dialog.component';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
   providers: [
     {

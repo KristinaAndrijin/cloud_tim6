@@ -50,10 +50,10 @@ export class LoginComponent implements OnInit{
         onSuccess: (result) => {
           console.log("login uspesno");
           this.jwtService.setCurrentUser(this.username);
-          let c = this.jwtService.getCurrentUser();
-          console.log(c);
+          // let c = this.jwtService.getCurrentUser();
+          // console.log(c);
           const accessToken = result.getAccessToken().getJwtToken();
-          console.log(result.getIdToken().getJwtToken());
+          // console.log(result.getIdToken().getJwtToken());
           this.jwtService.setToken(result.getIdToken().getJwtToken());
           // this.helloService.sendHello().subscribe({
           //   next: result => {
