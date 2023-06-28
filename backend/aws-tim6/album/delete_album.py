@@ -27,8 +27,11 @@ def delete_album(event, context):
                 }
                 return {"statusCode": 403, "body": json.dumps(body)}
 
-        except:
-            pass
+        except Exception as e:
+            return {
+                "statusCode": 400,
+                "body": f"Error occurred: {str(e)}"
+            }
     else:
         body = {
             "message": "Missing token",
@@ -38,24 +41,24 @@ def delete_album(event, context):
 
 def delete_album_content_and_permissions(album_name):
     objects = get_all_album_objects(album_name)
-    if objects.len() > 0:
+    if len(objects) > 0:
         for object_key in objects:
             count = count_references(object_key)
             if count == 1:
                 fully_delete_object(object_key)
             object_album_table.delete_item(
                 Key={
-                    "album_key": {'S': album_name},
-                    "object_key": {'S': object_key}
+                    "album_key": album_name,
+                    "object_key": object_key
                 }
             )
     users = get_usernames_by_album_key(album_name)
-    if users.len() > 0:
+    if len(users) > 0:
         for username in users:
             user_album_table.delete_item(
                 Key={
-                    "username": {"S": username},
-                    "album_key": {"S": album_name}
+                    "username": username,
+                    "album_key": album_name
                 }
             )
 
@@ -87,15 +90,14 @@ def fully_delete_object(object_key):
     s3.delete_object(Bucket='projekat6', Key=object_key)
     fileMetadata.delete_item(
         Key={
-            "object_key": {'S': object_key}
+            "object_key": object_key
         }
     )
 
 def get_usernames_by_album_key(album_key):
 
-    response = user_album_table.query(
-        IndexName='album_key-index',
-        KeyConditionExpression='album_key = :album_key',
+    response = user_album_table.scan(
+        FilterExpression='album_key = :album_key',
         ExpressionAttributeValues={':album_key': album_key},
         ProjectionExpression='username'
     )
