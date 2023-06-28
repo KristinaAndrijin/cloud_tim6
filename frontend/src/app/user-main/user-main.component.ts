@@ -19,7 +19,7 @@ export class UserMainComponent implements OnInit {
   dialogAlbumName: string ="";
   currentAlbum: string = "";
 
-  constructor(private filesService: FilesService, private router: Router, private jwtService: JwtService) {
+  constructor(private filesService: FilesService, private router: Router, private jwtService: JwtService, private dialog: MatDialog, private albumService:AlbumService) {
   }
   albums: any[] = [];
 
@@ -36,16 +36,22 @@ export class UserMainComponent implements OnInit {
     this.filesService.getAlbums().subscribe(
       {
         next: result => {
-          console.log(result);
+          // console.log(result);
           let albums_back = result.albums;
           albums_back.forEach((element: string) => {
+            // console.log(element);
             let parts = element.split('/');
             let owner = parts[0];
             let album_name = parts.slice(1).join('/');
             back_albums.push({ name: album_name, owner: owner });
+            // console.log(back_albums);
           });
           // alert("Albums received!");
           this.albums = back_albums;
+          this.albums[0] = { name: 'default', owner: this.jwtService.getCurrentUser() }
+          // console.log(this.albums);
+          // console.log(this.albums[0]);
+          // console.log(this.albums[1]);
         },
         error: err => {
           console.log(err);
@@ -54,6 +60,45 @@ export class UserMainComponent implements OnInit {
       }
     )
     return [];
+  }
+
+  uploadFile(albumName: string) {
+    this.router.navigate(['upload'], { queryParams: { album: albumName } });
+  }
+
+  create_album(){
+    const dialogRef: MatDialogRef<StringDialogComponent> = this.dialog.open(StringDialogComponent, {
+      width: '450px',
+      data: this.dialogAlbumName
+    });
+    
+    let path = this.jwtService.getCurrentUser() + '/';
+    // let position = path.split('/').slice(1).join('/');
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        let address = result;
+        address.replace('default', '');
+        // if (position === "undefined") {
+        //   address = result;
+        // }
+        // else{
+        //   address = position + "/" + result
+        // }
+        this.albumService.create_album(address).subscribe({
+          next: result => {
+            alert("Album created!");
+            console.log(result);
+            this.getAlbums();
+          },
+          error: e =>
+          {
+            console.log(e)
+            alert(e?.error?.message || JSON.stringify(e));
+          }
+        });
+      }
+    });
+    
   }
 
 }

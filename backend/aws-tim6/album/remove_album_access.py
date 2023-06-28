@@ -6,16 +6,23 @@ table = dynamodb.Table('userAlbum')
 client = boto3.client('cognito-idp')
 user_pool_id = 'eu-central-1_JTv6FBTKX'
 
+
 def remove_access_to_album_from_user(event, context):
+    # print('eee')
     if 'requestContext' in event and 'authorizer' in event['requestContext']:
         user_info = event['requestContext']['authorizer']['claims']
         owner = user_info['preferred_username']
+        # print('owner')
         try:
             # dynamo db
             event_body = json.loads(event["body"])
             album_name = event_body.get("album_name")
             username = event_body.get("username")
-            if username not in get_users():
+            # print(album_name, username)
+            all_users = get_users()
+            # print(all_users)
+            if username not in all_users:
+                # print('tu je')
                 body = {
                     "message": "User doesn't exist"
                 }
@@ -23,7 +30,6 @@ def remove_access_to_album_from_user(event, context):
                     'statusCode': 400,
                     'body': json.dumps(body)
                 }
-            
             album_key = owner + "/" + album_name
             response = table.get_item(
                 Key={
@@ -60,7 +66,14 @@ def remove_access_to_album_from_user(event, context):
                 }
                 return {"statusCode": 404, "body": json.dumps(body)}
 
-        
+        except dynamodb.meta.client.exceptions.ConditionalCheckFailedException:
+            body = {
+                "message": "Item already exists"
+            }
+            return {
+                'statusCode': 400,
+                'body': json.dumps(body)
+            }
         except Exception as e:
             return {
                 "statusCode": 400,
@@ -72,7 +85,6 @@ def remove_access_to_album_from_user(event, context):
             "message": "Missing token",
         }
         return {"statusCode": 401, "body": json.dumps(body)}
-    
     
     
 def get_users():

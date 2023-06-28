@@ -32,6 +32,12 @@ export class ExplorerComponent {
     this.files = this.filesService.getFiles();
     this.route.queryParams.subscribe(params => {
       this.albumName = params['album'];
+      console.log(this.albumName);
+      if (this.albumName.includes('/default')) {
+        console.log('sadrzi');
+        this.albumName = this.albumName.replace('/default', '');
+        console.log(this.albumName);
+      }
     });
     this.getAlbums();
   }
@@ -112,13 +118,17 @@ export class ExplorerComponent {
     let position = path.slice(1).join('/');
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        let address = ""
-        if (position === "undefined") {
-          address = result;
-        }
-        else{
+        let address = result;
+        console.log(position)
+        if (position != '') {
           address = position + "/" + result
         }
+        // if (position === "undefined") {
+        //   address = result;
+        // }
+        // else{
+        //   address = position + "/" + result
+        // }
         this.albumService.create_album(address).subscribe({
           next: result => {
             alert("Album created!");
