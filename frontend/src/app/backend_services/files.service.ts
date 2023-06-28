@@ -1,11 +1,13 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FilesService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   private albums = [
     { name: 'default', owner: 'Mirko' },
@@ -49,8 +51,8 @@ export class FilesService {
     // Add more dummy file objects as needed
   ];
 
-  getAlbums() {
-    return this.albums;
+  getAlbums():Observable<any> {
+    return this.http.get("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/get_albums_by_user");
   }
 
   getFiles() {
@@ -59,6 +61,10 @@ export class FilesService {
 
   getFileDetails() {
     return this.fileDetails;
+  }
+
+  getDummyAlbums() {
+    return this.albums;
   }
 
   uploadFile(file: File | null, fileDescription: string, fileTags: string): void {

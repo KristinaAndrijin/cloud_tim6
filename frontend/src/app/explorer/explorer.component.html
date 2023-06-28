@@ -4,7 +4,7 @@
   </div>
   <div class="album-list">
     <div *ngFor="let album of albums" class="album-item">
-      <span class="album-name" (click)="navigateToExplorer(album.name)">{{ album.name }}</span>
+      <span class="album-name" (click)="navigateToExplorer(album.owner + '/' + album.name)">{{ album.fancy_name }}</span>
       <span class="album-owner">Owner: {{ album.owner }}</span>
       <button mat-icon-button class="album-options" [matMenuTriggerFor]="albumOptionsMenu">
         <mat-icon>more_vert</mat-icon>
