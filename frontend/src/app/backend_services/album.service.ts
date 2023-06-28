@@ -14,4 +14,10 @@ export class AlbumService {
       {headers: new HttpHeaders().set("content-type", "application/json")}
       );
    }
+   delete_album(album_name: string){
+    return this.http.post("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/delete_album",
+    {"album_name": album_name},
+    {headers: new HttpHeaders().set("content-type", "application/json")}
+    );
+ }
 }

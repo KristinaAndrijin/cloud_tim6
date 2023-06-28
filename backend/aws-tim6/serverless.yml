@@ -220,6 +220,21 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+  
+  delete_album:
+    handler: album/delete_album.delete_album
+    package:
+      patterns:
+        - 'album/delete_album.py'
+    events:
+      - http:
+          path: delete_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 
   get_albums_by_user:
     handler: album/get_albums.get_albums_by_user

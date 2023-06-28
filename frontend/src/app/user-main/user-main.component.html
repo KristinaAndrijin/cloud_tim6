@@ -6,6 +6,7 @@
     <div *ngFor="let album of albums" class="album-item" (click)="navigateToExplorer(album.owner + '/' + album.name)">
       <span class="album-name">{{ album.name }}</span>
       <span class="album-owner">Owner: {{ album.owner }}</span>
+      
     </div>
   </div>
 </div>

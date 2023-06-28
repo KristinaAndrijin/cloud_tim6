@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { StringDialogComponent } from '../string-dialog/string-dialog.component';
 import { AlbumService } from '../backend_services/album.service';
 import { AlbumDialogComponent } from '../album-dialog/album-dialog.component';
+import { JwtService } from '../jwt.service';
 
 
 
@@ -44,7 +45,22 @@ export class ExplorerComponent {
   }
 
   deleteAlbum(album: any) {
-    // Handle delete album functionality
+    const album_to_delete = album.owner+"/"+album.name
+    console.log(album_to_delete)
+    this.albumService.delete_album(album_to_delete).subscribe(
+      {
+        next: result => {
+          alert("Album deleted!");
+          console.log(result);
+          this.getAlbums();
+        },
+        error: e =>
+        {
+          console.log(e)
+          alert(e?.error?.message || JSON.stringify(e));
+        }
+      }
+    )
   }
   
   editAlbumPermissions(album: any) {
@@ -94,7 +110,7 @@ export class ExplorerComponent {
         console.log(result);
         this.albumService.create_album(position + "/" + result).subscribe({
           next: result => {
-            alert("Album kreiran!");
+            alert("Album created!");
             console.log(result);
             this.getAlbums();
           },
