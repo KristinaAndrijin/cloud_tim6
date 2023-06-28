@@ -50,11 +50,27 @@ provider:
     - Effect: Allow
       Action:
         - s3:*
+        - s3:PutObject
       Resource:
         - arn:aws:s3:::projekat6
 
 
 functions:
+  get_signed_url:
+    handler: files/upload_signed.generate_signed_url
+    package:
+      patterns:
+        - 'files/upload_signed.py'
+    events:
+      - http:
+          path: get_signed_url
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
   hello_from_other_func:
     handler: handler.hello
     package:
@@ -317,6 +333,14 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: projekat6
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins: ['*']
+              AllowedMethods:
+                - GET 
+                - POST
+                - PUT
+                - DELETE
     filesMetadata:
       Type: AWS::DynamoDB::Table
       Properties:

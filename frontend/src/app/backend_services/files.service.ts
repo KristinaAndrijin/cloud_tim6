@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -67,9 +68,23 @@ export class FilesService {
     return this.albums;
   }
 
-  uploadFile(file: File | null, fileDescription: string, fileTags: string): void {
-    console.log("File:", file);
-    console.log("Description:", fileDescription);
-    console.log("Tags:", fileTags);
+  uploadFile(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/get_signed_url';
+    const fileName = file.name;
+
+    return this.http.post(url, { fileName }).pipe(
+      map((response: any) => {
+        console.log(response.signedUrl);
+        const { signedUrl, key } = response;
+        return this.uploadToS3(signedUrl, file, key);
+      })
+    );
   }
+
+  private uploadToS3(signedUrl: string, file: File, key: string): Observable<any> {
+    const headers = { 'Content-Type': file.type };
+
+    return this.http.post(signedUrl, file, { headers });
+  }
+
 }
