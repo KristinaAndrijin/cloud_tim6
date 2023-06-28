@@ -296,6 +296,21 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  get_access_by_user_album:
+    handler: album/get_access.get_access_by_user_album
+    package:
+      patterns:
+        - 'album/get_access.py'
+    events:
+      - http:
+          path: get_access_by_user_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
 resources:
   Resources:
     projekat6:
