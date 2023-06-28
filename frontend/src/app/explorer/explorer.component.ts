@@ -104,11 +104,16 @@ export class ExplorerComponent {
     
     let path = this.albumName.split('/');
     let position = path.slice(1).join('/');
-    console.log(position);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result);
-        this.albumService.create_album(position + "/" + result).subscribe({
+        let address = ""
+        if (position === "undefined") {
+          address = result;
+        }
+        else{
+          address = position + "/" + result
+        }
+        this.albumService.create_album(address).subscribe({
           next: result => {
             alert("Album created!");
             console.log(result);
