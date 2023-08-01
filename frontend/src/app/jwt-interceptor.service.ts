@@ -16,6 +16,11 @@ export class JwtInterceptorService implements HttpInterceptor {
     //   return next.handle(request);
     // }
     if (jwt){
+
+      if( request.url.startsWith('https://projekat6.s3.amazonaws.com/uploads')){
+        return next.handle(request);
+      }
+
       const cloned = request.clone({
         setHeaders:{
           Authorization: `${jwt}`

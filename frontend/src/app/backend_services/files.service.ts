@@ -76,7 +76,7 @@ export class FilesService {
       map((response: any) => {
         console.log(response.signedUrl);
         const { signedUrl, key } = response;
-        return this.uploadToS3(signedUrl, file, key);
+        return this.uploadToS3(signedUrl, file, key).subscribe();
       })
     );
   }
@@ -84,7 +84,7 @@ export class FilesService {
   private uploadToS3(signedUrl: string, file: File, key: string): Observable<any> {
     const headers = { 'Content-Type': file.type };
 
-    return this.http.post(signedUrl, file, { headers });
+    return this.http.put(signedUrl, file, { headers });
   }
 
 }
