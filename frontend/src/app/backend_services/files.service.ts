@@ -1,6 +1,28 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { switchMap, catchError } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+
+
+
+export interface FileMetadata 
+{
+  name : string,
+  size : number,
+  type : string,
+  upload_date : string,
+  description: string,
+  tags : string,
+}
+
+export interface AlbumObjectData
+
+{
+  album_key: string
+  file_name : string
+}
 
 @Injectable({
   providedIn: 'root'
@@ -67,9 +89,82 @@ export class FilesService {
     return this.albums;
   }
 
-  uploadFile(file: File | null, fileDescription: string, fileTags: string): void {
-    console.log("File:", file);
-    console.log("Description:", fileDescription);
-    console.log("Tags:", fileTags);
+  /*uploadFile(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/get_signed_url';
+    const fileName = file.name;
+
+    return this.http.post(url, { fileName }).pipe(
+      map((response: any) => {
+        console.log(response.signedUrl);
+        const { signedUrl, key } = response;
+        return this.uploadToS3(signedUrl, file, key).subscribe();
+      })
+    );
   }
+*/
+  
+
+uploadFile(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+  const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/get_signed_url';
+  const fileName = file.name;
+
+  return this.http.post(url, { fileName }).pipe(
+    switchMap((response: any) => {
+      const { signedUrl, key } = response;
+      return this.uploadToS3(signedUrl, file, key).pipe(
+        catchError(error => {
+          console.error('File upload to S3 failed:', error);
+          return EMPTY;
+        }),
+        switchMap(() => {
+          return this.uploadFileMetadata(file, fileDescription, fileTags, address);
+        }),
+        switchMap(() => {
+          return this.uploadAlbumObject(file, fileDescription, fileTags, address);
+        }),
+      );
+    })
+  );
+}
+
+  
+  uploadToS3(signedUrl: string, file: File, key: string): Observable<any> {
+    const headers = { 'Content-Type': file.type };
+
+    return this.http.put(signedUrl, file, { headers });
+  }
+
+  uploadFileMetadata(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/upload_write_metadata';
+    const fileName = file.name;
+    const now = new Date();
+
+    const meta : FileMetadata = 
+    {
+      name : file.name,
+      size : file.size,
+      type : file.type,
+      upload_date : now.toDateString(),
+      description: fileDescription,
+      tags : fileTags,
+    }
+
+    return this.http.post(url, meta);
+  }
+
+  uploadAlbumObject(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+    //todo: implement
+    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/write_album_object';
+    const fileName = file.name;
+    const now = new Date();
+
+    const aoData :  AlbumObjectData =
+    {
+      album_key: address,
+      file_name : file.name
+    }
+
+    return this.http.post(url, aoData);
+  }
+
 }
