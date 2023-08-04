@@ -1,10 +1,11 @@
 import json
 import boto3
+from constants import *
+
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('userAlbum')
 client = boto3.client('cognito-idp')
-user_pool_id = 'eu-central-1_JTv6FBTKX'
 
 
 def get_access_by_user_album(event, context):

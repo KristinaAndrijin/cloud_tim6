@@ -5,8 +5,6 @@ sqs = boto3.client('sqs')
 
 def write_metadata_upload(event, context):
     try:
-        queue_url = 'https://sqs.eu-central-1.amazonaws.com/275505252693/metadata-queue'
-
         request_body = json.loads(event['body'])
         user_info = event['requestContext']['authorizer']['claims']
         username = user_info['preferred_username']

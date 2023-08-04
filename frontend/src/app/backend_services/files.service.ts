@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { switchMap, catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 
@@ -74,7 +75,7 @@ export class FilesService {
   ];
 
   getAlbums():Observable<any> {
-    return this.http.get("https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/get_albums_by_user");
+    return this.http.get(`${environment.baseUrl}get_albums_by_user`);
   }
 
   getFiles() {
@@ -105,7 +106,7 @@ export class FilesService {
   
 
 uploadFile(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
-  const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/get_signed_url';
+  const url = `${environment.baseUrl}get_signed_url`;
   const fileName = file.name;
 
   return this.http.post(url, { fileName }).pipe(
@@ -135,7 +136,7 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
   }
 
   uploadFileMetadata(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
-    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/upload_write_metadata_to_queue';
+    const url = `${environment.baseUrl}upload_write_metadata_to_queue`;
     const fileName = file.name;
     const now = new Date();
 
@@ -154,7 +155,7 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
 
   uploadAlbumObject(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
     //todo: implement
-    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/write_album_object';
+    const url = `${environment.baseUrl}write_album_object`;
     const fileName = file.name;
     const now = new Date();
 

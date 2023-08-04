@@ -1,10 +1,11 @@
 import json
 import boto3
+from constants import *
+
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('userAlbum')
 client = boto3.client('cognito-idp')
-user_pool_id = 'eu-central-1_JTv6FBTKX'
 
 def remove_access_to_album_from_user(event, context):
     if 'requestContext' in event and 'authorizer' in event['requestContext']:
