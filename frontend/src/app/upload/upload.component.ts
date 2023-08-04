@@ -49,6 +49,7 @@ export class UploadComponent {
         {
           console.log(e)
           alert(e?.error?.message || JSON.stringify(e));
+          console.log(e?.error?.message || JSON.stringify(e));
         }
       }
     );

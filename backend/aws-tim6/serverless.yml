@@ -53,6 +53,10 @@ provider:
         - s3:PutObject
       Resource:
         - arn:aws:s3:::projekat6
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+      Resource: arn:aws:sqs:eu-central-1:275505252693:metadata-queue
 
 
 functions:
@@ -71,14 +75,14 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
-  upload_write_metadata:
+  upload_write_metadata_to_queue:
     handler: files/upload_file_write_metadata.write_metadata_upload
     package:
       patterns:
         - 'files/upload_file_write_metadata.py'
     events:
       - http:
-          path: upload_write_metadata
+          path: upload_write_metadata_to_queue
           method: POST
           cors: true
           authorizer:
@@ -359,6 +363,12 @@ functions:
 
 resources:
   Resources:
+
+    UploadMetadataQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: metadata-queue
+
     projekat6:
       Type: AWS::S3::Bucket
       Properties:

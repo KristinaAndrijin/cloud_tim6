@@ -1,11 +1,11 @@
 import json
 import boto3
 
-dynamodb = boto3.resource('dynamodb')
+sqs = boto3.client('sqs')
 
 def write_metadata_upload(event, context):
     try:
-        metadata_table = dynamodb.Table('filesMetadata')
+        queue_url = 'https://sqs.eu-central-1.amazonaws.com/275505252693/metadata-queue'
 
         request_body = json.loads(event['body'])
         user_info = event['requestContext']['authorizer']['claims']
@@ -21,21 +21,20 @@ def write_metadata_upload(event, context):
             'description': request_body['description'],
         }
 
-        response = metadata_table.put_item(
-            Item=item,
-            ConditionExpression='attribute_not_exists(object_key)'
+        # Send the item as a message to the SQS queue
+        sqs.send_message(
+            QueueUrl=queue_url,
+            MessageBody=json.dumps(item)
         )
 
         body = {
-            "message": "Metadata added successfully",
+            "message": "Metadata added to SQS queue successfully",
         }
         return {"statusCode": 200, "body": json.dumps(body)}
 
-
-
     except Exception as e:
-
         body = {
             "message": str(e),
         }
         return {"statusCode": 500, "body": json.dumps(body)}
+

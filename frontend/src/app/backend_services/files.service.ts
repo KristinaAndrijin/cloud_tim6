@@ -135,7 +135,7 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
   }
 
   uploadFileMetadata(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
-    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/upload_write_metadata';
+    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/upload_write_metadata_to_queue';
     const fileName = file.name;
     const now = new Date();
 
