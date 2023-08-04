@@ -86,6 +86,21 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  upload_write_album_object:
+    handler: files/upload_write_album_object.write_album_object
+    package:
+      patterns:
+        - 'files/upload_write_album_object.py'
+    events:
+      - http:
+          path: write_album_object
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
   hello_from_other_func:
     handler: handler.hello
     package:
