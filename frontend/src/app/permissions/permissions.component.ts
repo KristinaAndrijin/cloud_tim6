@@ -90,7 +90,7 @@ give_access(userAccess: UserAccess) {
   this.albumService.giveAccessPermissions(album_name, userAccess.username).subscribe(
     {
       next: result => {
-        alert('slay');
+        // alert('slay');
         this.initAlbums();
       },
       error: err => {
@@ -108,7 +108,7 @@ remove_access(userAccess: UserAccess) {
   this.albumService.removeAccessPermissions(album_name, userAccess.username).subscribe(
     {
       next: result => {
-        alert('slay');
+        // alert('slay');
         this.initAlbums();
       },
       error: err => {

@@ -26,7 +26,8 @@ export class AppComponent {
         // Gledamo na kojoj smo putanji i prikazujemo navbar u skladu sa tim
         const navigationEndEvent = event as NavigationEnd;
         const url = navigationEndEvent.url;
-        if (url.includes('main') || url.includes('explorer') || url.includes('details') || url.includes('upload') || url.includes("invite")) {
+        if (url.includes('main') || url.includes('explorer') || url.includes('details') || url.includes('upload') || url.includes("invite")
+        || url.includes("permissions")) {
           this.showNavbar = true;
         } else {
           this.showNavbar = false;
