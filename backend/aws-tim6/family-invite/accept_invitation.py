@@ -1,16 +1,12 @@
 import json
 import boto3
-from constants import *
 
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('invitations')
-
 ses_client = boto3.client("ses")
-
-
 client = boto3.client('cognito-idp')
-
+user_pool_id = 'eu-central-1_N333IcKgF'
 
 
 def accept_invitation(event, context):

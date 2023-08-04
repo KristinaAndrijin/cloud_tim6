@@ -3,6 +3,7 @@ import boto3
 
 dynamodb = boto3.resource('dynamodb')
 
+
 def write_album_object(event, context):
     try:
         album_object_table = dynamodb.Table('albumObject')
@@ -25,9 +26,7 @@ def write_album_object(event, context):
         }
         return {"statusCode": 200, "body": json.dumps(body)}
 
-
     except Exception as e:
-
         body = {
             "message": str(e),
         }

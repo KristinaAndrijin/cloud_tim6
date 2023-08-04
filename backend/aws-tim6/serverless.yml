@@ -60,6 +60,7 @@ provider:
         - "Fn::GetAtt": [UploadMetadataQueue, Arn]
 
 functions:
+
   get_signed_url:
     handler: files/upload_signed.generate_signed_url
     package:

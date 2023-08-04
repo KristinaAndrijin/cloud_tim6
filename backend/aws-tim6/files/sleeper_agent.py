@@ -1,13 +1,14 @@
 import json
 import boto3
-from constants import *
 
 dynamodb = boto3.resource('dynamodb')
 metadata_table = dynamodb.table('filesMetadata')
 sqs = boto3.client('sqs')
+queue_url = 'https://sqs.eu-central-1.amazonaws.com/275505252693/metadata-queue'
 
 def sleeper_agent(event, context):
     try:
+
         response = sqs.receive_message(
             QueueUrl=queue_url,
             MaxNumberOfMessages=1

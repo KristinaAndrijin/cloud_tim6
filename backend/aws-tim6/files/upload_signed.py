@@ -1,10 +1,9 @@
 import json
 import boto3
-from constants import *
 
 def generate_signed_url(event, context):
     try:
-
+        bucket_name = 'projekat6'
         s3_client = boto3.client('s3')
 
         # Retrieve the file name from the request body

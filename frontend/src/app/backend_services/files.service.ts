@@ -112,6 +112,7 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
   return this.http.post(url, { fileName }).pipe(
     switchMap((response: any) => {
       const { signedUrl, key } = response;
+      console.log(signedUrl)
       return this.uploadToS3(signedUrl, file, key).pipe(
         catchError(error => {
           console.error('File upload to S3 failed:', error);
