@@ -101,7 +101,7 @@ export class FilesService {
 
 
   uploadFileMetadata(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
-    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/get_signed_url';
+    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/upload_write_metadata';
     const fileName = file.name;
     const now = new Date();
 
@@ -116,7 +116,7 @@ export class FilesService {
       tags : fileTags,
     }
 
-    return this.http.put(url, {});
+    return this.http.post(url, meta);
   }
 
 }

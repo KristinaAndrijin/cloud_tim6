@@ -56,7 +56,7 @@ export class UploadComponent {
     console.log("pozvannn s3");
 
 
-    this.filesService.uploadFileMetadata(this.file, fileDescription, fileTags, this.albumName).subscribe(
+   /* this.filesService.uploadFileMetadata(this.file, fileDescription, fileTags, this.albumName).subscribe(
       {
         next: result => {
           alert("File upload started");
@@ -68,7 +68,7 @@ export class UploadComponent {
           alert(e?.error?.message || JSON.stringify(e));
         }
       }
-    );
+    );*/
 
     console.log("pozvannn dynamo");
 
