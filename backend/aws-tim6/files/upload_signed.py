@@ -1,5 +1,6 @@
 import json
 import boto3
+from constants import *
 
 def generate_signed_url(event, context):
     try:
@@ -13,7 +14,6 @@ def generate_signed_url(event, context):
         username = user_info['preferred_username']
 
         # Specify the S3 bucket and key for the file
-        bucket_name = 'projekat6'
         key = username + '/' + file_name  # Adjust the key as needed
 
         # Generate a presigned URL for uploading the file

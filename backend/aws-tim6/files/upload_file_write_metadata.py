@@ -1,5 +1,6 @@
 import json
 import boto3
+from constants import *
 
 sqs = boto3.client('sqs')
 

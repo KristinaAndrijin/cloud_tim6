@@ -52,7 +52,7 @@ provider:
         - s3:*
         - s3:PutObject
       Resource:
-        - "Fn::GetAtt": [projekat6, Arn]
+        - arn:aws:s3:::projekat6
     - Effect: Allow
       Action:
         - sqs:*
@@ -89,9 +89,6 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-
-
-
 
   upload_write_album_object:
     handler: files/upload_write_album_object.write_album_object
