@@ -7,14 +7,18 @@ def write_metadata_upload(event, context):
     try:
         metadata_table = dynamodb.Table('filesMetadata')
 
+        request_body = json.loads(event['body'])
+        user_info = event['requestContext']['authorizer']['claims']
+        username = user_info['preferred_username']
+
         item = {
-            'object_key': "xd",
-            'name': "xd",
-            'type': "xd",
-            'size': "xd",
-            'upload_date': "datummm",
-            'tags': "ijoooj,xd,fuf",
-            'description': "asdsa",
+            'object_key': username + "/" + request_body['name'],
+            'name': request_body['name'],
+            'type': request_body['type'],
+            'size': request_body['size'],
+            'upload_date': request_body['upload_date'],
+            'tags': request_body['tags'],
+            'description': request_body['description'],
         }
 
         response = metadata_table.put_item(

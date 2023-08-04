@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 
 export interface FileMetadata 
 {
-  object_key : string,
   name : string,
   size : number,
   type : string,
@@ -107,7 +106,6 @@ export class FilesService {
 
     const meta : FileMetadata = 
     {
-      object_key : "djole",
       name : file.name,
       size : file.size,
       type : file.type,
