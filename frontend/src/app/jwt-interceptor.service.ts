@@ -11,13 +11,10 @@ export class JwtInterceptorService implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
     const jwt = sessionStorage.getItem('accessToken');
-    //console.log("INTERCEPTED! Adding JWT: ", jwt);
-    // if(request.url.includes('/user/refreshToken')){
-    //   return next.handle(request);
-    // }
     if (jwt){
 
-      if( request.url.startsWith('https://projekat6.s3.amazonaws.com/uploads')){
+      //moguće da će nam trebati specifičniji url filter
+      if( request.url.startsWith('https://projekat6.s3.amazonaws.com')){
         return next.handle(request);
       }
 
