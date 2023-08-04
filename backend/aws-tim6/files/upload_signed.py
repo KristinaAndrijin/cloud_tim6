@@ -9,6 +9,7 @@ def generate_signed_url(event, context):
         # Retrieve the file name from the request body
         request_body = json.loads(event['body'])
         file_name = request_body['fileName']
+        content_type = request_body['contentType']
         user_info = event['requestContext']['authorizer']['claims']
         username = user_info['preferred_username']
 
@@ -18,7 +19,7 @@ def generate_signed_url(event, context):
         # Generate a presigned URL for uploading the file
         signed_url = s3_client.generate_presigned_url(
             'put_object',
-            Params={'Bucket': bucket_name, 'Key': key},
+            Params={'Bucket': bucket_name, 'Key': key, 'ContentType': content_type},
             ExpiresIn=3600  # URL expiration time in seconds (adjust as needed)
         )
 

@@ -103,31 +103,38 @@ export class FilesService {
     );
   }
 */
+
+// uploadFile(file: File, fileDescription: string, fileTags: string, address: string): Observable<any>{
+//     const url = `${environment.baseUrl}get_signed_url`;
+//   const fileName = file.name;
+//   return this.http.post(url, {fileName});
+// }
   
 
-uploadFile(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
-  const url = `${environment.baseUrl}get_signed_url`;
-  const fileName = file.name;
+  uploadFile(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+    const url = `${environment.baseUrl}get_signed_url`;
+    const fileName = file.name;
+    const contentType = file.type;
 
-  return this.http.post(url, { fileName }).pipe(
-    switchMap((response: any) => {
-      const { signedUrl, key } = response;
-      console.log(signedUrl)
-      return this.uploadToS3(signedUrl, file, key).pipe(
-        catchError(error => {
-          console.error('File upload to S3 failed:', error);
-          return EMPTY;
-        }),
-        switchMap(() => {
-          return this.uploadFileMetadata(file, fileDescription, fileTags, address);
-        }),
-        switchMap(() => {
-          return this.uploadAlbumObject(file, fileDescription, fileTags, address);
-        }),
-      );
-    })
-  );
-}
+    return this.http.post(url, { fileName, contentType }).pipe(
+      switchMap((response: any) => {
+        const { signedUrl, key } = response;
+        console.log(signedUrl)
+        return this.uploadToS3(signedUrl, file, key).pipe(
+          catchError(error => {
+            console.error('File upload to S3 failed:', error);
+            return EMPTY;
+          }),
+          switchMap(() => {
+            return this.uploadFileMetadata(file, fileDescription, fileTags, address);
+          }),
+          switchMap(() => {
+            return this.uploadAlbumObject(file, fileDescription, fileTags, address);
+          }),
+        );
+      })
+    );
+  }
 
   
   uploadToS3(signedUrl: string, file: File, key: string): Observable<any> {
