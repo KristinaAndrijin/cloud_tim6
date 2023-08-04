@@ -55,7 +55,7 @@ provider:
         - arn:aws:s3:::projekat6
     - Effect: Allow
       Action:
-        - sqs:SendMessage
+        - sqs:*
       Resource: arn:aws:sqs:eu-central-1:275505252693:metadata-queue
 
 
@@ -89,6 +89,17 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+
+  sleeper_agent:
+    handler: files/sleeper_agent.sleeper_agent
+    package:
+      patterns:
+        - 'files/sleeper_agent.py'
+    events:
+      - s3:
+          bucket: projekat6
+          event: s3:ObjectCreated:*
+
 
   upload_write_album_object:
     handler: files/upload_write_album_object.write_album_object
