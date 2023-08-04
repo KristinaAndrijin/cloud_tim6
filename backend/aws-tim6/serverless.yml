@@ -52,7 +52,7 @@ provider:
         - s3:*
         - s3:PutObject
       Resource:
-        - arn:aws:s3:::projekat6
+        - arn:aws:s3:::projekat6/*
     - Effect: Allow
       Action:
         - sqs:*
