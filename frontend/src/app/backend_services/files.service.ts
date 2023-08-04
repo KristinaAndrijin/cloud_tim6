@@ -3,6 +3,18 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+
+export interface FileMetadata 
+{
+  object_key : string,
+  name : string,
+  size : number,
+  type : string,
+  upload_date : string,
+  description: string,
+  tags : string,
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -85,6 +97,26 @@ export class FilesService {
     const headers = { 'Content-Type': file.type };
 
     return this.http.put(signedUrl, file, { headers });
+  }
+
+
+  uploadFileMetadata(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+    const url = 'https://yccc05r7mh.execute-api.eu-central-1.amazonaws.com/dev/get_signed_url';
+    const fileName = file.name;
+    const now = new Date();
+
+    const meta : FileMetadata = 
+    {
+      object_key : "djole",
+      name : file.name,
+      size : file.size,
+      type : file.type,
+      upload_date : now.toDateString(),
+      description: fileDescription,
+      tags : fileTags,
+    }
+
+    return this.http.put(url, {});
   }
 
 }

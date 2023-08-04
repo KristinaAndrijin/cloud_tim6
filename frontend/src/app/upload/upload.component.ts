@@ -52,6 +52,25 @@ export class UploadComponent {
         }
       }
     );
-    console.log("pozvannn");
+
+    console.log("pozvannn s3");
+
+
+    this.filesService.uploadFileMetadata(this.file, fileDescription, fileTags, this.albumName).subscribe(
+      {
+        next: result => {
+          alert("File upload started");
+          console.log(result);
+        },
+        error: e =>
+        {
+          console.log(e)
+          alert(e?.error?.message || JSON.stringify(e));
+        }
+      }
+    );
+
+    console.log("pozvannn dynamo");
+
   }
 }

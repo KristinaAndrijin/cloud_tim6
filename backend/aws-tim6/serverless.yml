@@ -71,6 +71,21 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  upload_write_metadata:
+    handler: files/upload_file_write_metadata.write_metadata_upload
+    package:
+      patterns:
+        - 'files/upload_file_write_metadata.py'
+    events:
+      - http:
+          path: upload_write_metadata
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
   hello_from_other_func:
     handler: handler.hello
     package:
