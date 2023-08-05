@@ -38,6 +38,21 @@ export class UploadComponent {
     const fileDescription: string = this.description;
     const fileTags: string = this.tags;
 
-    this.filesService.uploadFile(this.file, fileDescription, fileTags);
+
+    this.filesService.uploadFile(this.file, fileDescription, fileTags, this.albumName).subscribe(
+      {
+        next: result => {
+          alert("File upload started");
+          console.log(result);
+        },
+        error: e =>
+        {
+          console.log(e)
+          alert(e?.error?.message || JSON.stringify(e));
+          console.log(e?.error?.message || JSON.stringify(e));
+        }
+      }
+    );
+
   }
 }

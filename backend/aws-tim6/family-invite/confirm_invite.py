@@ -8,8 +8,7 @@ table = dynamodb.Table('invitations')
 ses_client = boto3.client("ses")
 
 client = boto3.client('cognito-idp')
-user_pool_id = 'eu-central-1_JTv6FBTKX'
-
+user_pool_id = 'eu-central-1_N333IcKgF'
 
 def confirm_invite(event, context):
     if 'requestContext' in event and 'authorizer' in event['requestContext']:
