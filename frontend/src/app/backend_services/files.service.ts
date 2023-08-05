@@ -163,7 +163,7 @@ export class FilesService {
 
   uploadAlbumObject(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
     //todo: implement
-    const url = `${environment.baseUrl}write_album_object`;
+    const url = `${environment.baseUrl}write_album_object_to_queue`;
     const fileName = file.name;
     const now = new Date();
 

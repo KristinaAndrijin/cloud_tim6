@@ -58,6 +58,7 @@ provider:
         - sqs:*
       Resource:
         - "Fn::GetAtt": [UploadMetadataQueue, Arn]
+        - "Fn::GetAtt": [UploadAlbumObjectQueue, Arn]
 
 functions:
 
@@ -102,14 +103,14 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
-  upload_write_album_object:
+  upload_write_album_object_to_queue:
     handler: files/upload_write_album_object.write_album_object
     package:
       patterns:
         - 'files/upload_write_album_object.py'
     events:
       - http:
-          path: write_album_object
+          path: write_album_object_to_queue
           method: POST
           cors: true
           authorizer:
@@ -380,6 +381,11 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: metadata-queue
+
+    UploadAlbumObjectQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: album-object-queue-real
 
     projekat6:
       Type: AWS::S3::Bucket

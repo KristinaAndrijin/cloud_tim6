@@ -2,11 +2,12 @@ import json
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-
+sqs = boto3.client('sqs')
 
 def write_album_object(event, context):
     try:
         album_object_table = dynamodb.Table('albumObject')
+        queue_url = 'https://sqs.eu-central-1.amazonaws.com/275505252693/album-object-queue-real'
 
         request_body = json.loads(event['body'])
         user_info = event['requestContext']['authorizer']['claims']
@@ -17,12 +18,18 @@ def write_album_object(event, context):
             'album_key': request_body['album_key'],
         }
 
-        response = album_object_table.put_item(
-            Item=item,
+        # Send the item as a message to the SQS queue
+        sqs.send_message(
+            QueueUrl=queue_url,
+            MessageBody=json.dumps(item)
         )
 
+        # response = album_object_table.put_item(
+        #     Item=item,
+        # )
+
         body = {
-            "message": "Album data added successfully",
+            "message": "Album data added successfully to queue",
         }
         return {"statusCode": 200, "body": json.dumps(body)}
 
