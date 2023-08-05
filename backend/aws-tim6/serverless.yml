@@ -77,6 +77,22 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+
+  get_file_metadata:
+    handler: files/obtain_metadata.obtain_metadata
+    package:
+      patterns:
+        - 'files/obtain_metadata.py'
+    events:
+      - http:
+          path: obtain_metadata
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
   sleeper_agent:
     handler: files/sleeper_agent.sleeper_agent
     package:
