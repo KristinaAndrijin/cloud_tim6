@@ -76,6 +76,17 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  sleeper_agent:
+    handler: files/sleeper_agent.sleeper_agent
+    package:
+      patterns:
+        - 'files/sleeper_agent.py'
+    events:
+      - s3:
+          bucket: projekat6
+          event: s3:ObjectCreated:*
+          existing: true
+
   upload_write_metadata_to_queue:
     handler: files/upload_file_write_metadata.write_metadata_upload
     package:
