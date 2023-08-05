@@ -9,6 +9,7 @@ import { FilesService } from '../backend_services/files.service';
 })
 export class DetailsComponent {
   fileName: string = "";
+  albumName: string = "";
   fileDetails: any;
   constructor(private route: ActivatedRoute, private filesService: FilesService) { }
 
@@ -17,6 +18,7 @@ export class DetailsComponent {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.fileName = params['file'];
+      this.albumName = params['album'];
 
       this.fileDetails = this.filesService.getFileDetails();
     });
