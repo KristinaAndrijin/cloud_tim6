@@ -82,8 +82,14 @@ export class ExplorerComponent {
   }
   
   editFile(file: any) {
-    // Handle edit file functionality
+    this.router.navigate(['upload'], {
+      queryParams: {
+        edit: true,
+        fileName: file.owner + "/" + file.name
+      }
+    });
   }
+  
   
   moveFile(file: any) {
     // Handle move file functionality

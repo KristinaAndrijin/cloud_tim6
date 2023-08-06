@@ -15,6 +15,8 @@ export class UploadComponent {
   description: string = "";
   tags: string = "";
   file: File | null = null;
+  isEdit : boolean = false;
+  objectKeyToEdit: string = "";
 
   constructor(
     private route: ActivatedRoute,
@@ -26,8 +28,24 @@ export class UploadComponent {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.albumName = params['album'];
+      this.isEdit = params['edit'];
+      this.objectKeyToEdit = params['fileName'];
+  
+      if (this.isEdit && this.objectKeyToEdit) {
+        this.filesService.getMetadata(this.objectKeyToEdit).subscribe(
+          response => {
+            this.description = response.description;
+            this.tags = response.tags;
+            this.objectKeyToEdit = this.objectKeyToEdit;
+          },
+          error => {
+            console.error('Error fetching file details:', error);
+          }
+        );
+      }
     });
   }
+  
 
   onFileSelected(event: any): void {
     const fileList: FileList | null = event.target.files;
