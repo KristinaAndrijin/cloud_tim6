@@ -44,4 +44,10 @@ export class DetailsComponent {
       );
     });
   }
+
+
+  download()
+  {
+    
+  }
 }
