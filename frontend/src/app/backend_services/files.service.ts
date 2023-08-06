@@ -61,7 +61,7 @@ export class FilesService {
 
 
   private files = [
-    { name: 'snake.png', owner: 'Mirko', dateUploaded: '2022-07-12' },
+    { name: 'kreizi.gif', owner: 'vlada', dateUploaded: '1944-06-24' },
     { name: 'documentbralenale.xml', owner: 'Aleksandar Aleksandrovic', dateUploaded: '2022-06-28' },
     // Add more dummy file objects as needed
   ];

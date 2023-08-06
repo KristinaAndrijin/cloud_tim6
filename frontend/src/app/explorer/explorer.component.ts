@@ -90,7 +90,21 @@ export class ExplorerComponent {
   }
   
   downloadFile(file: any) {
-    // Handle download file functionality
+    const fileName = file.name;
+    const fileOwner = file.owner;
+    const downloadPayload = file.owner + "/" + file.name;
+
+    this.filesService.generatePresignedUrl(downloadPayload).subscribe(
+      response => {
+        const signedUrl = response.signedUrl;
+        // Use the signed URL to initiate the download
+        window.open(signedUrl, '_blank');
+      },
+      error => {
+        console.error('Error generating presigned URL for download:', error);
+        // Handle error scenario
+      }
+    );
   }
   
   addToAlbum(file: any) {
