@@ -93,6 +93,22 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  generate_signed_url_download:
+    handler: files/download_signed.generate_signed_url
+    package:
+      patterns:
+        - 'files/download_signed.py'
+    events:
+      - http:
+          path: generate_presigned_url_download
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
   sleeper_agent:
     handler: files/sleeper_agent.sleeper_agent
     package:

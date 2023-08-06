@@ -77,7 +77,7 @@ export class FilesService {
   getMetadata(fileName: string): Observable<any> {
     const url = `${environment.baseUrl}obtain_metadata`;
     const body = {
-      fileName: fileName
+      obj_key: fileName
     };
 
     return this.http.post(url, body);
@@ -171,6 +171,17 @@ export class FilesService {
     }
 
     return this.http.post(url, aoData);
+  }
+
+
+  generatePresignedUrl(fileName: string): Observable<{ signedUrl: string }> {
+    const url = `${environment.baseUrl}/generate_presigned_url_download`; 
+
+    const payload = {
+      fileName: fileName
+    };
+
+    return this.http.post<{ signedUrl: string }>(url, payload);
   }
 
 }

@@ -48,6 +48,21 @@ export class DetailsComponent {
 
   download()
   {
-    
+    this.filesService.generatePresignedUrl(this.fileName).subscribe(
+      response => {
+        if (response.signedUrl) {
+          const link = document.createElement('a');
+          link.href = response.signedUrl; // Use the generated presigned URL
+          link.target = '_blank'; // Open the URL in a new tab
+          link.download = this.fileName; // Set the suggested filename for the download
+          link.click(); // Trigger the click event on the link to start the download
+        } else {
+          console.error('No signed URL received for download.');
+        }
+      },
+      error => {
+        console.error('Error generating presigned URL:', error);
+      }
+    );
   }
 }

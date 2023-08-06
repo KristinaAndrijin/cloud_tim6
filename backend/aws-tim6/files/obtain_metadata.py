@@ -16,12 +16,13 @@ def convert_decimal_to_string(data):
 
 def obtain_metadata(event, context):
     try:
-        user_info = event['requestContext']['authorizer']['claims']
-        username = user_info['preferred_username']
+        #user_info = event['requestContext']['authorizer']['claims']
+        #username = user_info['preferred_username']
         request_body = json.loads(event['body'])
-        file_name = request_body['fileName']
+        obj_key_from_front = request_body['obj_key']
 
-        object_key = username + "/" + file_name
+        #object_key = username + "/" + file_name
+        object_key = obj_key_from_front
 
         response = table.get_item(
             Key={
