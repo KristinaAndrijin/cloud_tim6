@@ -8,6 +8,7 @@ provider:
   profile: serverlessUser
   region: eu-central-1
   stage: dev
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -15,19 +16,18 @@ provider:
         - cognito-idp:ListUsers
         - cognito-idp:*
       Resource:
-        - arn:aws:cognito-idp:eu-central-1:275505252693:userpool/eu-central-1_JTv6FBTKX
+        - "Fn::GetAtt": [CognitoUserPool, Arn]
 
     - Effect: Allow
       Action:
         - sns:Publish
         - sns:Subscribe
-      Resource:
-        - arn:aws:sns:eu-central-1:275505252693:SNSTopic
+      Resource: arn:aws:sns:eu-central-1:275505252693:SNSTopic
 
     - Effect: Allow
       Action:
         - ses:*
-      Resource: 
+      Resource:
         - arn:aws:ses:eu-central-1:275505252693:identity/aws.tim6@gmail.com
 
     - Effect: Allow
@@ -42,8 +42,8 @@ provider:
       Resource:
         - "Fn::GetAtt": [InvitationTable, Arn]
         - "Fn::GetAtt": [filesMetadata, Arn]
-        - "Fn::GetAtt": [albumObject, Arn]        
-        - "Fn::GetAtt": [userAlbum, Arn] 
+        - "Fn::GetAtt": [albumObject, Arn]
+        - "Fn::GetAtt": [userAlbum, Arn]
         # add other tables here using the same sintax
         # InvitationTable is resource name, not table name!
 
@@ -52,14 +52,16 @@ provider:
         - s3:*
         - s3:PutObject
       Resource:
-        - arn:aws:s3:::projekat6
+        - arn:aws:s3:::projekat6/*
     - Effect: Allow
       Action:
         - sqs:*
-      Resource: arn:aws:sqs:eu-central-1:275505252693:metadata-queue
-
+      Resource:
+        - "Fn::GetAtt": [UploadMetadataQueue, Arn]
+        - "Fn::GetAtt": [UploadAlbumObjectQueue, Arn]
 
 functions:
+
   get_signed_url:
     handler: files/upload_signed.generate_signed_url
     package:
@@ -68,21 +70,6 @@ functions:
     events:
       - http:
           path: get_signed_url
-          method: POST
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-
-  upload_write_metadata_to_queue:
-    handler: files/upload_file_write_metadata.write_metadata_upload
-    package:
-      patterns:
-        - 'files/upload_file_write_metadata.py'
-    events:
-      - http:
-          path: upload_write_metadata_to_queue
           method: POST
           cors: true
           authorizer:
@@ -99,16 +86,31 @@ functions:
       - s3:
           bucket: projekat6
           event: s3:ObjectCreated:*
+          existing: true
 
+  upload_write_metadata_to_queue:
+    handler: files/upload_file_write_metadata.write_metadata_upload
+    package:
+      patterns:
+        - 'files/upload_file_write_metadata.py'
+    events:
+      - http:
+          path: upload_write_metadata_to_queue
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 
-  upload_write_album_object:
+  upload_write_album_object_to_queue:
     handler: files/upload_write_album_object.write_album_object
     package:
       patterns:
         - 'files/upload_write_album_object.py'
     events:
       - http:
-          path: write_album_object
+          path: write_album_object_to_queue
           method: POST
           cors: true
           authorizer:
@@ -379,6 +381,11 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: metadata-queue
+
+    UploadAlbumObjectQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: album-object-queue-real
 
     projekat6:
       Type: AWS::S3::Bucket

@@ -3,23 +3,23 @@ import boto3
 
 def generate_signed_url(event, context):
     try:
-
+        bucket_name = 'projekat6'
         s3_client = boto3.client('s3')
 
         # Retrieve the file name from the request body
         request_body = json.loads(event['body'])
         file_name = request_body['fileName']
+        content_type = request_body['contentType']
         user_info = event['requestContext']['authorizer']['claims']
         username = user_info['preferred_username']
 
         # Specify the S3 bucket and key for the file
-        bucket_name = 'projekat6'
         key = username + '/' + file_name  # Adjust the key as needed
 
         # Generate a presigned URL for uploading the file
         signed_url = s3_client.generate_presigned_url(
             'put_object',
-            Params={'Bucket': bucket_name, 'Key': key},
+            Params={'Bucket': bucket_name, 'Key': key, 'ContentType': content_type},
             ExpiresIn=3600  # URL expiration time in seconds (adjust as needed)
         )
 
