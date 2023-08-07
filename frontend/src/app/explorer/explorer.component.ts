@@ -23,6 +23,7 @@ export class ExplorerComponent {
   files: any[] = [];
   albumName: string = "";
   dialogAlbumName: string ="";
+  fullAlbumName : string = "";
 
   constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
 
@@ -32,6 +33,7 @@ export class ExplorerComponent {
     this.files = this.filesService.getFiles();
     this.route.queryParams.subscribe(params => {
       this.albumName = params['album'];
+      this.fullAlbumName = params['album'];
       console.log(this.albumName);
       if (this.albumName.includes('/default')) {
         console.log('sadrzi');
@@ -47,7 +49,7 @@ export class ExplorerComponent {
   }
 
   navigateToDetails(fileName: string) {
-    this.router.navigate(['details'], { queryParams: { file: fileName }} );
+    this.router.navigate(['details'], { queryParams: { file: fileName, album:this.fullAlbumName}} );
   }
 
   deleteAlbum(album: any) {
@@ -88,7 +90,21 @@ export class ExplorerComponent {
   }
   
   downloadFile(file: any) {
-    // Handle download file functionality
+    const fileName = file.name;
+    const fileOwner = file.owner;
+    const downloadPayload = file.owner + "/" + file.name;
+
+    this.filesService.generatePresignedUrl(downloadPayload).subscribe(
+      response => {
+        const signedUrl = response.signedUrl;
+        // Use the signed URL to initiate the download
+        window.open(signedUrl, '_blank');
+      },
+      error => {
+        console.error('Error generating presigned URL for download:', error);
+        // Handle error scenario
+      }
+    );
   }
   
   addToAlbum(file: any) {

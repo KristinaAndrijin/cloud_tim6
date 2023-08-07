@@ -2,6 +2,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilesService } from '../backend_services/files.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-upload',
@@ -14,7 +16,12 @@ export class UploadComponent {
   tags: string = "";
   file: File | null = null;
 
-  constructor(private route: ActivatedRoute, private filesService: FilesService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private filesService: FilesService,
+    private snackBar: MatSnackBar
+  ) {}
+  
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -34,25 +41,27 @@ export class UploadComponent {
       alert('Please select a file.'); 
       return; 
     }
-
+  
     const fileDescription: string = this.description;
     const fileTags: string = this.tags;
-
-
+  
     this.filesService.uploadFile(this.file, fileDescription, fileTags, this.albumName).subscribe(
       {
         next: result => {
-          alert("File upload started");
+          this.snackBar.open('File upload started', 'Dismiss', {
+            duration: 3000, 
+            horizontalPosition: 'center', 
+            verticalPosition: 'bottom' 
+          });
           console.log(result);
         },
-        error: e =>
-        {
-          console.log(e)
+        error: e => {
+          console.log(e);
           alert(e?.error?.message || JSON.stringify(e));
           console.log(e?.error?.message || JSON.stringify(e));
         }
       }
     );
-
   }
+  
 }

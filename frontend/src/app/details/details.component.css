@@ -36,4 +36,20 @@
   tr:nth-child(even) {
     background-color: rgb(254, 213, 219);
   }
+
+  button {
+    width: fit-content;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #292c29;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #af209a;
+  }
   
