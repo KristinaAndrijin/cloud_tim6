@@ -413,11 +413,13 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: metadata-queue
+        VisibilityTimeout: 300
 
     UploadAlbumObjectQueue:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: album-object-queue-real
+        VisibilityTimeout: 300
 
     projekat6:
       Type: AWS::S3::Bucket
