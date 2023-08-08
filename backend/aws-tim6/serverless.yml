@@ -465,7 +465,7 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: metadata-queue
-        VisibilityTimeout: 0
+        VisibilityTimeout: 30
         MessageRetentionPeriod: 300
 
 
@@ -473,7 +473,7 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: album-object-queue-real
-        VisibilityTimeout: 0
+        VisibilityTimeout: 30
         MessageRetentionPeriod: 300
 
 

@@ -1,8 +1,5 @@
 import json
 import logging
-import sys
-import traceback
-
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
