@@ -458,6 +458,21 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  get_files_by_album:
+    handler: files/get_files.get_files_by_album
+    package:
+      patterns:
+        - 'files/get_files.py'
+    events:
+      - http:
+          path: get_files_by_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
 resources:
   Resources:
 

@@ -248,6 +248,8 @@ cloud_tim6/backend/keys.py
 # Node
 /node_modules
 backend/aws-tim6/node_modules
+backend/aws-tim6/package.json
+backend/aws-tim6/package-lock.json
 npm-debug.log
 yarn-error.log
 

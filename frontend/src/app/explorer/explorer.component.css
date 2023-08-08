@@ -44,6 +44,7 @@ h1#album-name {
 .file-name {
   font-weight: bold;
   cursor: pointer;
+  width: fit-content;
 }
 
 .album-owner,

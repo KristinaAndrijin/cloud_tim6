@@ -21,10 +21,10 @@
     </div>
     <h1>Files:</h1>
     <div *ngFor="let file of files" class="file-item">
-      <span class="file-name" (click)="navigateToDetails(file.name)">{{ file.name }}</span>
+      <span class="file-name" (click)="navigateToDetails(file.key)">{{ file.name }}</span>
       <span class="file-middle">
         <span class="file-owner">Owner: {{ file.owner }}</span>
-        <span class="file-date">Date Uploaded: {{ file.dateUploaded }}</span>
+        <span class="file-date">Date Uploaded: {{ file.upload_date }}</span>
       </span>
       <button mat-icon-button class="file-options" [matMenuTriggerFor]="fileOptionsMenu">
         <mat-icon>more_vert</mat-icon>

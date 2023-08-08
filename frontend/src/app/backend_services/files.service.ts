@@ -76,7 +76,7 @@ export class FilesService {
   }
 
 
-  getFiles(albumName: string) {
+  getFiles(albumName: string):Observable<any> {
     console.log(albumName);
     // const currentDate: Date = new Date();
 
@@ -94,7 +94,7 @@ export class FilesService {
     // const formattedTime: string = `${day}.${month+1}.${year}. ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
     // console.log(`Current time: ${formattedTime}`);
-    return this.http.post(`${environment.baseUrl}get_files`,
+    return this.http.post(`${environment.baseUrl}get_files_by_album`,
       {"album_name": albumName},
       {headers: new HttpHeaders().set("content-type", "application/json")}
     );

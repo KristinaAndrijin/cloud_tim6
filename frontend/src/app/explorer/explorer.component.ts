@@ -209,25 +209,21 @@ export class ExplorerComponent {
 
 
   getFiles() {
-    let path = this.albumName.split('/');
-    let position = path.slice(1).join('/') + '/';
-    let back_albums = [{}];
-    this.filesService.getAlbums().subscribe(
+    let back_files = [{}];
+    this.filesService.getFiles(this.albumName).subscribe(
       {
         next: result => {
           console.log(result);
-          let albums_back = result.albums;
-          albums_back.forEach((element: string) => {
-            if (element.startsWith(this.albumName + '/')) {
-              let parts = element.split('/');
-              let owner = parts[0];
-              let album_name = parts.slice(1).join('/').replace(this.albumName, '');
-              let fancy_album_name = parts.slice(1).join('/').replace(position, '');
-              back_albums.push({ name: album_name, owner: owner, fancy_name: fancy_album_name });
-            }
+          let files_back = result.files;
+          files_back.forEach((element: any) => {
+              let owner = element['owner']
+              let name = element['name']
+              let upload_date = element['upload_date']
+              let key = owner + '/' + name
+              back_files.push({ name: name, owner: owner, upload_date: upload_date, key:key });
           });
           // alert("Albums received!");
-          this.albums = back_albums;
+          this.files = back_files;
         },
         error: err => {
           console.log(err);

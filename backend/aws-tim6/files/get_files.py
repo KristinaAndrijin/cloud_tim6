@@ -12,18 +12,31 @@ def get_files_by_album(event, context):
         try:
             response = table.scan()
 
+            event_body = json.loads(event["body"])
+            album_name = event_body.get("album_name")
+
+            requested_username = album_name.split('/')[0]
+            if requested_username != username:
+                body = {
+                    "message": "Can't view this!",
+                }
+                return {"statusCode": 403, "body": json.dumps(body)}
+
             items = response['Items']
             while 'LastEvaluatedKey' in response:
                 response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
                 items.extend(response['Items'])
-            albums = []
+            files = []
             for item in items:
-                if item['album_key'] == username:
-                    albums.append(item['album_key'])
-            print(albums)
+                if item['album_key'] == album_name:
+                    # print(item['album_key'])
+                    object_key = item['object_key']
+                    owner, name = object_key.split('/')
+                    files.append({'owner': owner, 'name':name, 'upload_date': item['upload_date']})
+            print('files ', files)
             body = {
                 "message": "Successful",
-                "albums": albums
+                "files": files
             }
             return {"statusCode": 200, "body": json.dumps(body)}
         except Exception as e:
