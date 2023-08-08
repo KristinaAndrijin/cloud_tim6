@@ -76,7 +76,6 @@ export class UserMainComponent implements OnInit {
     });
     
     let path = this.jwtService.getCurrentUser() + '/';
-    let path2 = this.jwtService.getCurrentUser() + '/';
     // let position = path.split('/').slice(1).join('/');
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

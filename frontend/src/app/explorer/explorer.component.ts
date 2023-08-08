@@ -30,7 +30,6 @@ export class ExplorerComponent {
   ngOnInit(): void {
     // console.log(this.albums);
     // this.albums = this.filesService.getDummyAlbums();
-    this.files = this.filesService.getFiles();
     this.route.queryParams.subscribe(params => {
       this.albumName = params['album'];
       this.fullAlbumName = params['album'];
@@ -43,6 +42,7 @@ export class ExplorerComponent {
       }
     });
     this.getAlbums();
+    this.getFiles();
   }
 
   navigateToExplorer(albumName: string) {
@@ -178,6 +178,37 @@ export class ExplorerComponent {
   
   
   getAlbums() {
+    let path = this.albumName.split('/');
+    let position = path.slice(1).join('/') + '/';
+    let back_albums = [{}];
+    this.filesService.getAlbums().subscribe(
+      {
+        next: result => {
+          console.log(result);
+          let albums_back = result.albums;
+          albums_back.forEach((element: string) => {
+            if (element.startsWith(this.albumName + '/')) {
+              let parts = element.split('/');
+              let owner = parts[0];
+              let album_name = parts.slice(1).join('/').replace(this.albumName, '');
+              let fancy_album_name = parts.slice(1).join('/').replace(position, '');
+              back_albums.push({ name: album_name, owner: owner, fancy_name: fancy_album_name });
+            }
+          });
+          // alert("Albums received!");
+          this.albums = back_albums;
+        },
+        error: err => {
+          console.log(err);
+          alert(err?.error?.message || JSON.stringify(err));
+        }
+      }
+    )
+    return [];
+  }
+
+
+  getFiles() {
     let path = this.albumName.split('/');
     let position = path.slice(1).join('/') + '/';
     let back_albums = [{}];

@@ -16,6 +16,7 @@ def write_album_object(event, context):
         item = {
             'object_key': username + "/" + request_body['file_name'],
             'album_key': request_body['album_key'],
+            'upload_date': request_body['upload_date'],
         }
 
         # Send the item as a message to the SQS queue

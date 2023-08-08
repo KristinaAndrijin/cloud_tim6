@@ -21,8 +21,9 @@ export interface FileMetadata
 export interface AlbumObjectData
 
 {
-  album_key: string
-  file_name : string
+  album_key: string,
+  file_name : string,
+  upload_date : string,
 }
 
 @Injectable({
@@ -70,9 +71,42 @@ export class FilesService {
     return this.http.get(`${environment.baseUrl}get_albums_by_user`);
   }
 
-  getFiles() {
+  getFilesDummy() {
     return this.files;
   }
+
+
+  getFiles(albumName: string) {
+    console.log(albumName);
+    // const currentDate: Date = new Date();
+
+    // const year: number = currentDate.getFullYear();
+    // const month: number = currentDate.getMonth();
+    // console.log(month+1);
+    // const day: number = currentDate.getDate();
+
+    // const hours: number = currentDate.getHours();
+    // const minutes: number = currentDate.getMinutes();
+    // const seconds: number = currentDate.getSeconds();
+
+    // // const date: number = currentDate.getDate();
+
+    // const formattedTime: string = `${day}.${month+1}.${year}. ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    // console.log(`Current time: ${formattedTime}`);
+    return this.http.post(`${environment.baseUrl}get_files`,
+      {"album_name": albumName},
+      {headers: new HttpHeaders().set("content-type", "application/json")}
+    );
+  }
+
+  create_album(album_name: string){
+    return this.http.post(`${environment.baseUrl}create_album`,
+    {"album_name": album_name},
+    {headers: new HttpHeaders().set("content-type", "application/json")}
+    );
+ }
+
 
   getMetadata(fileName: string): Observable<any> {
     const url = `${environment.baseUrl}obtain_metadata`;
@@ -113,13 +147,29 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
   const fileName = file.name;
   const contentType = file.type;
 
+  const currentDate: Date = new Date();
+
+  const year: number = currentDate.getFullYear();
+  const month: number = currentDate.getMonth();
+  console.log(month+1);
+  const day: number = currentDate.getDate();
+
+  const hours: number = currentDate.getHours();
+  const minutes: number = currentDate.getMinutes();
+  const seconds: number = currentDate.getSeconds();
+
+  // const date: number = currentDate.getDate();
+
+  const now: string = `${day}.${month+1}.${year}. ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+
   return this.http.post(url, { fileName, contentType }).pipe(
     switchMap((response: any) => {
       const { signedUrl, key } = response;
 
       // Create observables for metadata and album uploads
-      const uploadMetadata$ = this.uploadFileMetadata(file, fileDescription, fileTags, address);
-      const uploadAlbum$ = this.uploadAlbumObject(file, fileDescription, fileTags, address);
+      const uploadMetadata$ = this.uploadFileMetadata(file, fileDescription, fileTags, address, now);
+      const uploadAlbum$ = this.uploadAlbumObject(file, fileDescription, fileTags, address, now);
 
       // Use concatMap to execute metadata and album uploads sequentially
       return concat(uploadMetadata$, uploadAlbum$).pipe(
@@ -137,8 +187,6 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
   );
 }
 
-
-
   
   uploadToS3(signedUrl: string, file: File, key: string): Observable<any> {
     const headers = { 'Content-Type': file.type };
@@ -146,17 +194,17 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
     return this.http.put(signedUrl, file, { headers });
   }
 
-  uploadFileMetadata(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+  uploadFileMetadata(file: File, fileDescription: string, fileTags: string, address: string, now: string): Observable<any> {
     const url = `${environment.baseUrl}upload_write_metadata_to_queue`;
     const fileName = file.name;
-    const now = new Date();
+    // const now = new Date();
 
     const meta : FileMetadata = 
     {
       name : file.name,
       size : file.size,
       type : file.type,
-      upload_date : now.toDateString(),
+      upload_date : now,
       description: fileDescription,
       tags : fileTags,
     }
@@ -164,16 +212,17 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
     return this.http.post(url, meta);
   }
 
-  uploadAlbumObject(file: File, fileDescription: string, fileTags: string, address: string): Observable<any> {
+  uploadAlbumObject(file: File, fileDescription: string, fileTags: string, address: string, now: string): Observable<any> {
     //todo: implement
     const url = `${environment.baseUrl}write_album_object_to_queue`;
     const fileName = file.name;
-    const now = new Date();
+    // const now = new Date();
 
     const aoData :  AlbumObjectData =
     {
       album_key: address,
-      file_name : file.name
+      file_name : file.name,
+      upload_date : now,
     }
 
     return this.http.post(url, aoData);
