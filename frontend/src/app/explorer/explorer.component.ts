@@ -37,6 +37,7 @@ export class ExplorerComponent {
       console.log(this.albumName);
       if (this.albumName.includes('/default')) {
         console.log('sadrzi');
+        let bla = this.jwtService.getCurrentUser();
         this.albumName = this.albumName.replace('/default', '');
         console.log(this.albumName);
       }

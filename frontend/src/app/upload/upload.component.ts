@@ -38,7 +38,7 @@ export class UploadComponent {
 
   uploadFile(): void {
     if (!this.file) {
-      alert('Please select a file.'); 
+      alert('Please select a file.');  
       return; 
     }
   
@@ -48,6 +48,7 @@ export class UploadComponent {
     this.filesService.uploadFile(this.file, fileDescription, fileTags, this.albumName).subscribe(
       {
         next: result => {
+          console.log(this.albumName);
           this.snackBar.open('File upload started', 'Dismiss', {
             duration: 3000, 
             horizontalPosition: 'center', 
