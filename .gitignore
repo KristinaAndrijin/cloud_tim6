@@ -247,6 +247,7 @@ cloud_tim6/backend/keys.py
 # Angular
 # Node
 /node_modules
+backend/aws-tim6/node_modules
 npm-debug.log
 yarn-error.log
 
