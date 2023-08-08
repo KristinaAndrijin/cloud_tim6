@@ -2,6 +2,9 @@ service: aws-tim6
 
 frameworkVersion: '3'
 
+plugins:
+  - serverless-step-functions
+
 provider:
   name: aws
   runtime: python3.9
@@ -59,8 +62,57 @@ provider:
       Resource:
         - "Fn::GetAtt": [UploadMetadataQueue, Arn]
         - "Fn::GetAtt": [UploadAlbumObjectQueue, Arn]
+    - Effect: Allow
+      Action:
+        - states:*
+      Resource:
+        - arn:aws:states:eu-central-1:275505252693:stateMachine:MyStepFunction
+
+
+stepFunctions:
+  stateMachines:
+    myStepFunction:
+      name: MyStepFunction
+      definition:
+        Comment: "A parallel Step Function"
+        StartAt: ParallelState
+        States:
+          ParallelState:
+            Type: Parallel
+            Branches:
+              - StartAt: LambdaFunction1
+                States:
+                  LambdaFunction1:
+                    Type: Task
+                    Resource:
+                      Fn::GetAtt: [write_metadata, Arn]
+                    Parameters:
+                      object_key.$: $.object_key
+                    End: true
+              - StartAt: LambdaFunction2
+                States:
+                  LambdaFunction2:
+                    Type: Task
+                    Resource:
+                      Fn::GetAtt: [write_albumObject, Arn]
+                    Parameters:
+                      object_key.$: $.object_key
+                    End: true
+            End: true
 
 functions:
+
+  write_metadata:
+    handler: files/write_metadata.write_metadata
+    package:
+      patterns:
+        - 'files/write_metadata.py'
+
+  write_albumObject:
+    handler: files/write_albumObject.write_albumObject
+    package:
+      patterns:
+        - 'files/write_albumObject.py'
 
   get_signed_url:
     handler: files/upload_signed.generate_signed_url
