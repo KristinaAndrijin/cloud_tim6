@@ -2,7 +2,7 @@ import json
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('albumObject')
+album_object_table = dynamodb.Table('albumObject')
 
 
 def get_files_by_album(event, context):
@@ -10,7 +10,7 @@ def get_files_by_album(event, context):
         user_info = event['requestContext']['authorizer']['claims']
         username = user_info['preferred_username']
         try:
-            response = table.scan()
+            response = album_object_table.scan()
 
             event_body = json.loads(event["body"])
             album_name = event_body.get("album_name")
@@ -24,7 +24,7 @@ def get_files_by_album(event, context):
 
             items = response['Items']
             while 'LastEvaluatedKey' in response:
-                response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+                response = album_object_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
                 items.extend(response['Items'])
             files = []
             for item in items:
@@ -32,7 +32,7 @@ def get_files_by_album(event, context):
                     # print(item['album_key'])
                     object_key = item['object_key']
                     owner, name = object_key.split('/')
-                    files.append({'owner': owner, 'name':name, 'upload_date': item['upload_date']})
+                    files.append({'owner': owner, 'name': name, 'upload_date': item['upload_date']})
             print('files ', files)
             body = {
                 "message": "Successful",
@@ -57,11 +57,11 @@ def get_users_by_files(event, context):
         event_body = json.loads(event["body"])
         album_name = event_body.get("album_name")
 
-        response = table.scan()
+        response = album_object_table.scan()
 
         items = response['Items']
         while 'LastEvaluatedKey' in response:
-            response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+            response = album_object_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
             items.extend(response['Items'])
         users = []
         for item in items:

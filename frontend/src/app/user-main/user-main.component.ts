@@ -49,7 +49,7 @@ export class UserMainComponent implements OnInit {
           // alert("Albums received!");
           this.albums = back_albums;
           this.albums[0] = { name: 'default', owner: this.jwtService.getCurrentUser() }
-          // console.log(this.albums);
+          console.log(this.albums);
           // console.log(this.albums[0]);
           // console.log(this.albums[1]);
         },

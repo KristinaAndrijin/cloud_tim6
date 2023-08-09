@@ -47,6 +47,7 @@ provider:
         - "Fn::GetAtt": [filesMetadata, Arn]
         - "Fn::GetAtt": [albumObject, Arn]
         - "Fn::GetAtt": [userAlbum, Arn]
+        - "Fn::GetAtt": [userFiles, Arn]
         # add other tables here using the same sintax
         # InvitationTable is resource name, not table name!
 
@@ -709,6 +710,24 @@ resources:
           - AttributeName: username
             KeyType: HASH
           - AttributeName: album_key
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    userFiles:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: userFiles
+        AttributeDefinitions:
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: file_key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+          - AttributeName: file_key
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1

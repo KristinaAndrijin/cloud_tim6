@@ -98,4 +98,8 @@ h1#album-name {
   background-color: #af209a;
 }
 
+.noShow {
+  color: red;
+}
+
 

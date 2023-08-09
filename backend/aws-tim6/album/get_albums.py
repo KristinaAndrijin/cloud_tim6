@@ -2,7 +2,7 @@ import json
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('userAlbum')
+user_album_table = dynamodb.Table('userAlbum')
 
 
 def get_albums_by_user(event, context):
@@ -10,16 +10,25 @@ def get_albums_by_user(event, context):
         user_info = event['requestContext']['authorizer']['claims']
         username = user_info['preferred_username']
         try:
-            response = table.scan()
+            response = user_album_table.scan()
         
             items = response['Items']
             while 'LastEvaluatedKey' in response:
-                response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+                response = user_album_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
                 items.extend(response['Items'])
+            albums_small = []
             albums = []
             for item in items:
-                if item['username'] == username:
-                    albums.append(item['album_key'])
+                album_key = item['album_key']
+                if item['username'] == username: #or album_key.split('/')[0] == username:
+                    # if '/' in album_key:
+                    #     albums = ...
+                    albums_small.append(album_key)
+            for item in items:
+                album_key = item['album_key']
+                for album in albums_small:
+                    if album in album_key and album_key not in albums:
+                        albums.append(album_key)
             print(albums)
             body = {
                 "message": "Successful",
@@ -44,11 +53,11 @@ def get_users_by_album(event, context):
         event_body = json.loads(event["body"])
         album_name = event_body.get("album_name")
         
-        response = table.scan()
+        response = user_album_table.scan()
     
         items = response['Items']
         while 'LastEvaluatedKey' in response:
-            response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+            response = user_album_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
             items.extend(response['Items'])
         users = []
         for item in items:

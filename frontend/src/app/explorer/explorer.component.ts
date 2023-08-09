@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive, NgModule   } from '@angular/core';
 import { FilesService } from '../backend_services/files.service';
 import { Router } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
@@ -179,13 +179,15 @@ export class ExplorerComponent {
   
   getAlbums() {
     let path = this.albumName.split('/');
-    let position = path.slice(1).join('/') + '/';
+    let position = path.slice(0).join('/') + '/';
     let back_albums = [{}];
     this.filesService.getAlbums().subscribe(
       {
         next: result => {
-          console.log(result);
+          // console.log('albums');
+          // console.log(result);
           let albums_back = result.albums;
+          // console.log('albums', result.albums);
           albums_back.forEach((element: string) => {
             if (element.startsWith(this.albumName + '/')) {
               let parts = element.split('/');
@@ -193,10 +195,15 @@ export class ExplorerComponent {
               let album_name = parts.slice(1).join('/').replace(this.albumName, '');
               let fancy_album_name = parts.slice(1).join('/').replace(position, '');
               back_albums.push({ name: album_name, owner: owner, fancy_name: fancy_album_name });
+              console.log('push', back_albums);
+              // console.log({ name: album_name, owner: owner, fancy_name: fancy_album_name });
             }
           });
           // alert("Albums received!");
+          // back_albums = back_albums.filter(item => item != undefined)
+          back_albums.splice(0, 1);
           this.albums = back_albums;
+          console.log(this.albums);
         },
         error: err => {
           console.log(err);
@@ -223,6 +230,7 @@ export class ExplorerComponent {
               back_files.push({ name: name, owner: owner, upload_date: upload_date, key:key });
           });
           // alert("Albums received!");
+          back_files.splice(0, 1);
           this.files = back_files;
         },
         error: err => {
