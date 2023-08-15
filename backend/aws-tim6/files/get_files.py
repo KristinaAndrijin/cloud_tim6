@@ -1,5 +1,6 @@
 import json
 import boto3
+from datetime import datetime
 
 dynamodb = boto3.resource('dynamodb')
 album_object_table = dynamodb.Table('albumObject')
@@ -64,10 +65,13 @@ def get_files_by_album(event, context):
                     owner, name = object_key.split('/')
                     files.append({'owner': owner, 'name': name, 'upload_date': item['upload_date']})
 
+            # files.append({'owner': 'rkis', 'name': 'n', 'upload_date': '18.10.2000. 19:46:18'})
             print('files ', files)
+            sorted_files = sorted(files, key=lambda x: datetime.strptime(x['upload_date'], '%d.%m.%Y. %H:%M:%S'))
+            print('sorted', sorted_files)
             body = {
                 "message": "Successful",
-                "files": files
+                "files": sorted_files
             }
             return {"statusCode": 200, "body": json.dumps(body)}
         except Exception as e:
