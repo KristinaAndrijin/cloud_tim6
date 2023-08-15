@@ -113,7 +113,18 @@ export class ExplorerComponent {
   }
   
   deleteFile(file: any) {
-    // Handle delete file functionality
+    const fileName = file.name;
+    const fileOwner = file.owner;
+    const downloadPayload = file.owner + "/" + file.name;
+    this.filesService.delete_item(downloadPayload).subscribe(
+      response => {
+        console.log('delet complet')
+      },
+      error => {
+        console.error('Error generating presigned URL for download:', error);
+        // Handle error scenario
+      }
+    );
   }
 
   // izvuci ime iz file key ??

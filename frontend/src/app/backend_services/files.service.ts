@@ -30,6 +30,10 @@ export interface AlbumObjectData
   providedIn: 'root'
 })
 export class FilesService {
+  
+  delete_item(fileName: string) {
+    return this.http.post(`${environment.baseUrl}delete_item`, {'object_key': fileName})
+  }
 
   constructor(private http: HttpClient) { }
 

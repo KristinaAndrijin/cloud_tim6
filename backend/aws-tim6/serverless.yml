@@ -102,6 +102,21 @@ stepFunctions:
             End: true
 
 functions:
+  delete_item:
+    handler: files/delete_item.delete_item
+    package:
+      patterns:
+        - 'files/delete_item.py'
+    events:
+      - http:
+          path: delete_item
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
 
   write_metadata:
     handler: files/write_metadata.write_metadata

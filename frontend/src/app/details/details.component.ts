@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FilesService } from '../backend_services/files.service';
+import { relative } from '@angular/compiler-cli';
 
 @Component({
   selector: 'app-details',
@@ -11,7 +12,7 @@ export class DetailsComponent {
   fileName: string = "";
   albumName: string = "";
   fileDetails: any;
-  constructor(private route: ActivatedRoute, private filesService: FilesService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private filesService: FilesService) { }
 
 
   formatBytes(bytes: number, decimals: number = 2): string {
@@ -26,6 +27,20 @@ export class DetailsComponent {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
   
+  delete_button(){
+    this.filesService.delete_item(this.fileName).subscribe(
+      response => {
+        console.log(response);
+        this.router.navigate(['/explorer'], {
+          queryParams: { album: this.albumName },
+        });
+      },
+      error => {
+        console.error('Error fetching metadata:', error);
+        // Handle error scenario
+      }
+    )
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
