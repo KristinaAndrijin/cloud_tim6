@@ -33,7 +33,8 @@ export class UserMainComponent implements OnInit {
 
   getAlbums() {
     let back_albums = [{}];
-    this.filesService.getAlbums().subscribe(
+    console.log(this.currentAlbum);
+    this.filesService.getAlbums(this.currentAlbum).subscribe(
       {
         next: result => {
           // console.log(result);

@@ -71,8 +71,10 @@ export class FilesService {
     // Add more dummy file objects as needed
   ];
 
-  getAlbums():Observable<any> {
-    return this.http.get(`${environment.baseUrl}get_albums_by_user`);
+  getAlbums(albumName: string):Observable<any> {
+    return this.http.post(`${environment.baseUrl}get_albums_by_user`,
+    {"album_name": albumName},
+    {headers: new HttpHeaders().set("content-type", "application/json")});
   }
 
   getFilesDummy() {
