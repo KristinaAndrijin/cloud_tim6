@@ -392,7 +392,7 @@ functions:
     events:
       - http:
           path: get_albums_by_user
-          method: GET
+          method: POST
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS

@@ -1,6 +1,6 @@
 <div class="list-container">
   <div class="list-header">
-    <h1 id="album-name">{{ albumName }}</h1>
+    <h1 id="album-name">{{ albumNameD }}</h1>
   </div>
   <div class="album-list">
     <h1>Albums:</h1>
@@ -23,6 +23,8 @@
     </div>
     <h3 class="noShow" *ngIf="albums.length==0" >No albums to show!</h3>
     <h1>Files:</h1>
+    <span *ngIf="show_span">You have permissions to view the following files: </span>
+   <br *ngIf="show_span"><br *ngIf="show_span">
     <div *ngIf="files.length!=0">
       <div *ngFor="let file of files" class="file-item">
         <span class="file-name" (click)="navigateToDetails(file.key)">{{ file.name }}</span>

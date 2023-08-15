@@ -22,8 +22,10 @@ export class ExplorerComponent {
   albums!: any;
   files: any[] = [];
   albumName: string = "";
+  albumNameD: string = "";
   dialogAlbumName: string ="";
   fullAlbumName : string = "";
+  show_span: boolean = false;
 
   constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
 
@@ -32,17 +34,22 @@ export class ExplorerComponent {
     // this.albums = this.filesService.getDummyAlbums();
     this.route.queryParams.subscribe(params => {
       this.albumName = params['album'];
+      this.albumNameD = this.albumName;
       this.fullAlbumName = params['album'];
-      console.log(this.albumName);
+      // console.log(this.albumName);
       if (this.albumName.includes('/default')) {
-        console.log('sadrzi');
+        // console.log('sadrzi');
         let bla = this.jwtService.getCurrentUser();
+        // if (this.albumName.includes('default')){
+        //   this.show_span = true;
+        // }
         this.albumName = this.albumName.replace('/default', '');
-        console.log(this.albumName);
+        // console.log(this.albumName);
       }
     });
     this.getAlbums();
     this.getFiles();
+
   }
 
   navigateToExplorer(albumName: string) {
@@ -181,7 +188,8 @@ export class ExplorerComponent {
     let path = this.albumName.split('/');
     let position = path.slice(0).join('/') + '/';
     let back_albums = [{}];
-    this.filesService.getAlbums().subscribe(
+    console.log(this.albumName + '/');
+    this.filesService.getAlbums(this.albumName + '/').subscribe(
       {
         next: result => {
           // console.log('albums');
@@ -189,21 +197,21 @@ export class ExplorerComponent {
           let albums_back = result.albums;
           // console.log('albums', result.albums);
           albums_back.forEach((element: string) => {
-            if (element.startsWith(this.albumName + '/')) {
+            // if (element.startsWith(this.albumName + '/')) {
               let parts = element.split('/');
               let owner = parts[0];
               let album_name = parts.slice(1).join('/').replace(this.albumName, '');
               let fancy_album_name = parts.slice(1).join('/').replace(position, '');
               back_albums.push({ name: album_name, owner: owner, fancy_name: fancy_album_name });
-              console.log('push', back_albums);
+              // console.log('push', back_albums);
               // console.log({ name: album_name, owner: owner, fancy_name: fancy_album_name });
-            }
+            // }
           });
           // alert("Albums received!");
           // back_albums = back_albums.filter(item => item != undefined)
           back_albums.splice(0, 1);
           this.albums = back_albums;
-          console.log(this.albums);
+          // console.log(this.albums);
         },
         error: err => {
           console.log(err);
@@ -231,10 +239,11 @@ export class ExplorerComponent {
           });
           // alert("Albums received!");
           back_files.splice(0, 1);
+          // console.log(back_files);
           this.files = back_files;
         },
         error: err => {
-          console.log(err);
+          // console.log(err);
           alert(err?.error?.message || JSON.stringify(err));
         }
       }
