@@ -10,6 +10,7 @@ import { ExplorerComponent } from './explorer/explorer.component';
 import { DetailsComponent } from './details/details.component';
 import {UploadComponent} from './upload/upload.component';
 import { PermissionsComponent} from './permissions/permissions.component';
+import { EditComponent } from './edit/edit.component';
 
 const routes: Routes = [
   {path: "", component: LoginComponent},
@@ -22,6 +23,7 @@ const routes: Routes = [
   {path: "explorer", component: ExplorerComponent},
   {path: "details", component: DetailsComponent},
   {path: "upload", component:UploadComponent},
+  {path: "edit", component:EditComponent},
   {path: "permissions", component: PermissionsComponent}
 ];
 

@@ -30,6 +30,7 @@ import { AlbumDialogComponent } from './album-dialog/album-dialog.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { EditComponent } from './edit/edit.component';
 
 
 
@@ -48,7 +49,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     UploadComponent,
     StringDialogComponent,
     PermissionsComponent,
-    AlbumDialogComponent
+    AlbumDialogComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,

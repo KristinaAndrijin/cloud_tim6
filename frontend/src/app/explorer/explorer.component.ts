@@ -90,7 +90,8 @@ export class ExplorerComponent {
   }
   
   editFile(file: any) {
-    // Handle edit file functionality
+    const object_key = file.owner + "/" + file.name
+    this.router.navigate(['edit'], { queryParams: { object_key : object_key } });
   }
   
   moveFile(file: any) {
