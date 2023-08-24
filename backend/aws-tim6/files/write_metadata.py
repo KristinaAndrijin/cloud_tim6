@@ -24,10 +24,17 @@ def write_metadata(event, context):
         item = json.loads(item_str)
         item_ok = item["object_key"].replace(" ", "+")
         if object_key == item_ok:
-            table.put_item(Item=item)
-            sqs.delete_message(
-                QueueUrl=metadata_queue_url,
-                ReceiptHandle=message["ReceiptHandle"]
-            )
-            logger.info('deleted message?')
-            break
+
+            if item["replaces"].replace(" ", "+") != item_ok:
+                replace_helper(item)
+            else:
+                table.put_item(Item=item)
+                sqs.delete_message(
+                    QueueUrl=metadata_queue_url,
+                    ReceiptHandle=message["ReceiptHandle"]
+                )
+                logger.info('deleted message?')
+                break
+
+def replace_helper (item):
+    pass

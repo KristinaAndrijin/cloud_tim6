@@ -16,6 +16,7 @@ export interface FileMetadata
   upload_date : string,
   description: string,
   tags : string,
+  replaces: string | null
 }
 
 export interface AlbumObjectData
@@ -185,7 +186,7 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
       const { signedUrl, key } = response;
 
       // Create observables for metadata and album uploads
-      const uploadMetadata$ = this.uploadFileMetadata(file, fileDescription, fileTags, address, now);
+      const uploadMetadata$ = this.uploadFileMetadata(file, fileDescription, fileTags, now, null);
       const uploadAlbum$ = this.uploadAlbumObject(file, fileDescription, fileTags, address, now);
 
       // Use concatMap to execute metadata and album uploads sequentially
@@ -231,11 +232,10 @@ editFile(file: File, fileDescription: string, fileTags: string, obj_key:string):
       const { signedUrl, key } = response;
 
       // Create observables for metadata and album uploads
-      const uploadMetadata$ = this.uploadFileMetadata(file, fileDescription, fileTags, address, now);
-      const uploadAlbum$ = this.uploadAlbumObject(file, fileDescription, fileTags, address, now);
+      const uploadMetadata$ = this.uploadFileMetadata(file, fileDescription, fileTags, now, obj_key);
 
       // Use concatMap to execute metadata and album uploads sequentially
-      return concat(uploadMetadata$, uploadAlbum$).pipe(
+      return concat(uploadMetadata$).pipe(
         switchMap(() => {
           // After metadata and album uploads are finished, start upload to S3
           return this.uploadToS3(signedUrl, file, key).pipe(
@@ -260,7 +260,8 @@ editFile(file: File, fileDescription: string, fileTags: string, obj_key:string):
     return this.http.put(signedUrl, file, { headers });
   }
 
-  uploadFileMetadata(file: File, fileDescription: string, fileTags: string, address: string, now: string): Observable<any> {
+  //ako postoji replaces onda ova poruka zapravo započinje edit koji menja i metadatu i album object i gdegod da se pojavi obj_key
+  uploadFileMetadata(file: File, fileDescription: string, fileTags: string, now: string, replaces: string|null): Observable<any> {
     const url = `${environment.baseUrl}upload_write_metadata_to_queue`;
     const fileName = file.name;
     // const now = new Date();
@@ -273,6 +274,7 @@ editFile(file: File, fileDescription: string, fileTags: string, obj_key:string):
       upload_date : now,
       description: fileDescription,
       tags : fileTags,
+      replaces: replaces
     }
 
     return this.http.post(url, meta);
