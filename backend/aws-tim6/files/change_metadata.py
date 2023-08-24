@@ -2,8 +2,7 @@ import json
 import boto3
 from decimal import Decimal
 
-dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('filesMetadata')
+dynamodb = boto3.client('dynamodb')
 
 def change_metadata(event, context):
     try:
@@ -23,8 +22,8 @@ def change_metadata(event, context):
                 '#tags': 'tags'
             },
             ExpressionAttributeValues={
-                ':descVal': {'S': new_description},
-                ':tagsVal': {'S': new_tags}
+                ':descVal': {'S': description},
+                ':tagsVal': {'S': tags}
             }
         )
 

@@ -47,10 +47,24 @@ export class EditComponent {
     }
   }
 
-  uploadFile(): void {
+  editFile(): void {
     if (!this.file) {
       
-      this.filesService.changeMetadata(this.object_key,this.description,this.tags)
+      this.filesService.changeMetadata(this.object_key,this.description,this.tags).subscribe(
+        {next: result => {
+          this.snackBar.open('File metadata changed', 'Dismiss', {
+            duration: 3000, 
+            horizontalPosition: 'center', 
+            verticalPosition: 'bottom' 
+          });
+          console.log(result);
+        },
+        error: e => {
+          console.log(e);
+          alert(e?.error?.message || JSON.stringify(e));
+          console.log(e?.error?.message || JSON.stringify(e));
+        }}
+      )
 
     }
   
