@@ -204,6 +204,55 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
   );
 }
 
+
+editFile(file: File, fileDescription: string, fileTags: string, obj_key:string): Observable<any> {
+  const url = `${environment.baseUrl}get_signed_url_edit`;
+  const fileName = file.name;
+  const contentType = file.type;
+
+  const currentDate: Date = new Date();
+
+  const year: number = currentDate.getFullYear();
+  const month: number = currentDate.getMonth();
+  console.log(month+1);
+  const day: number = currentDate.getDate();
+
+  const hours: number = currentDate.getHours();
+  const minutes: number = currentDate.getMinutes();
+  const seconds: number = currentDate.getSeconds();
+
+  // const date: number = currentDate.getDate();
+
+  const now: string = `${day}.${month+1}.${year}. ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+
+  return this.http.post(url, { obj_key, contentType }).pipe(
+    switchMap((response: any) => {
+      const { signedUrl, key } = response;
+
+      // Create observables for metadata and album uploads
+      const uploadMetadata$ = this.uploadFileMetadata(file, fileDescription, fileTags, address, now);
+      const uploadAlbum$ = this.uploadAlbumObject(file, fileDescription, fileTags, address, now);
+
+      // Use concatMap to execute metadata and album uploads sequentially
+      return concat(uploadMetadata$, uploadAlbum$).pipe(
+        switchMap(() => {
+          // After metadata and album uploads are finished, start upload to S3
+          return this.uploadToS3(signedUrl, file, key).pipe(
+            catchError(error => {
+              console.error('File upload to S3 failed:', error);
+              return EMPTY;
+            })
+          );
+        })
+      );
+    })
+  );
+}
+
+
+
+
   
   uploadToS3(signedUrl: string, file: File, key: string): Observable<any> {
     const headers = { 'Content-Type': file.type };

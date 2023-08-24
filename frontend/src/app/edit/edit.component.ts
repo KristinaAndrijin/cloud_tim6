@@ -67,28 +67,28 @@ export class EditComponent {
       )
 
     }
-  
-    const fileDescription: string = this.description;
-    const fileTags: string = this.tags;
-  
-    /*this.filesService.uploadFile(this.file, fileDescription, fileTags, this.albumName).subscribe(
-      {
-        next: result => {
-          console.log(this.albumName);
-          this.snackBar.open('File upload started', 'Dismiss', {
-            duration: 3000, 
-            horizontalPosition: 'center', 
-            verticalPosition: 'bottom' 
-          });
-          console.log(result);
-        },
-        error: e => {
-          console.log(e);
-          alert(e?.error?.message || JSON.stringify(e));
-          console.log(e?.error?.message || JSON.stringify(e));
+    else
+    {
+      this.filesService.editFile(this.file, this.description, this.tags, this.object_key).subscribe(
+        {
+          next: result => {
+            this.snackBar.open('File upload started', 'Dismiss', {
+              duration: 3000, 
+              horizontalPosition: 'center', 
+              verticalPosition: 'bottom' 
+            });
+            console.log(result);
+          },
+          error: e => {
+            console.log(e);
+            alert(e?.error?.message || JSON.stringify(e));
+            console.log(e?.error?.message || JSON.stringify(e));
+          }
         }
-      }
-    );*/
+      );
+    }
   }
+  
+    
 
 }

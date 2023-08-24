@@ -207,6 +207,22 @@ functions:
               Ref: ApiGatewayAuthorizer
 
 
+  generate_signed_url_edit:
+    handler: files/upload_signed_edit.generate_signed_url_edit
+    package:
+      patterns:
+        - 'files/upload_signed_edit.py'
+    events:
+      - http:
+          path: generate_presigned_url_edit
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
   sleeper_agent:
     handler: files/sleeper_agent.sleeper_agent
     package:
