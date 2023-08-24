@@ -137,8 +137,9 @@ export class ExplorerComponent {
 
   // izvuci ime iz file key ??
   editFilePermissions(file: any) {
-    let file_key = "kris/slay.omg"
-    this.router.navigate(['permissions'], { queryParams: { file_key: file_key } });
+    let file_key = file.owner + "/" + file.name
+    console.log(file.owner + "/" + file.name);
+    this.router.navigate(['permissions'], { queryParams: { file_key: file_key, album_name: this.albumName } });
   }
   uploadFile(albumName: string) {
     this.router.navigate(['upload'], { queryParams: { album: albumName } });

@@ -307,4 +307,29 @@ editFile(file: File, fileDescription: string, fileTags: string, obj_key:string):
     return this.http.post<{ signedUrl: string }>(url, payload);
   }
 
+  getUsersPermissions(album_name: string, file_key: string):Observable<any> {
+    return this.http.post(`${environment.baseUrl}get_access_by_user_file`,
+      {"album_name": album_name,
+        "file_key": file_key
+      },
+      {headers: new HttpHeaders().set("content-type", "application/json")}
+    );
+  }
+
+  removeAccessPermissions(file_key: string, username: string):Observable<any> {
+    return this.http.put(`${environment.baseUrl}remove_access_to_file_from_user`,
+      {"file_key": file_key,
+      "username": username},
+      {headers: new HttpHeaders().set("content-type", "application/json")}
+      );
+   }
+  
+   giveAccessPermissions(file_key: string, username: string):Observable<any> {
+    return this.http.put(`${environment.baseUrl}give_access_to_file_to_user`,
+      {"file_key": file_key,
+      "username": username},
+      {headers: new HttpHeaders().set("content-type", "application/json")}
+      );
+   }
+
 }

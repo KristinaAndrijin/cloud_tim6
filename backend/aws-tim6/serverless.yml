@@ -535,6 +535,51 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  give_access_to_file_to_user:
+    handler: files/give_file_access.give_access_to_file_to_user
+    package:
+      patterns:
+        - 'files/give_file_access.py'
+    events:
+      - http:
+          path: give_access_to_file_to_user
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  remove_access_to_file_from_user:
+    handler: files/remove_file_access.remove_access_to_file_from_user
+    package:
+      patterns:
+        - 'files/remove_file_access.py'
+    events:
+      - http:
+          path: remove_access_to_file_from_user
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_access_by_user_file:
+    handler: files/get_access.get_access_by_user_file
+    package:
+      patterns:
+        - 'files/get_access.py'
+    events:
+      - http:
+          path: get_access_by_user_file
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
 resources:
   Resources:
 

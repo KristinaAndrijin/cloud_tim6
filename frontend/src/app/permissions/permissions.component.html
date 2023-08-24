@@ -11,7 +11,8 @@
         <td mat-cell *matCellDef="let element">
           <button *ngIf="element.access && !element.hasAccess" class="greenBtn" (click)="give_access(element)">+</button>
           <button *ngIf="element.access && element.hasAccess" class="redBtn" (click)="remove_access(element)">-</button>
-          <h5 *ngIf="!element.access">Access granted</h5>
+          <h5 *ngIf="!element.access && album">Access granted through outter album</h5>
+          <h5 *ngIf="!element.access && !album">Access granted through album</h5>
         </td>
       </ng-container>
   
