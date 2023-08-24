@@ -207,7 +207,7 @@ uploadFile(file: File, fileDescription: string, fileTags: string, address: strin
 
 
 editFile(file: File, fileDescription: string, fileTags: string, obj_key:string): Observable<any> {
-  const url = `${environment.baseUrl}get_signed_url_edit`;
+  const url = `${environment.baseUrl}generate_presigned_url_edit`;
   const fileName = file.name;
   const contentType = file.type;
 

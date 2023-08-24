@@ -3,6 +3,7 @@ import boto3
 
 sqs = boto3.client('sqs')
 
+
 def write_metadata_upload(event, context):
     try:
         request_body = json.loads(event['body'])
@@ -18,6 +19,7 @@ def write_metadata_upload(event, context):
             'upload_date': request_body['upload_date'],
             'tags': request_body['tags'],
             'description': request_body['description'],
+            'replaces': request_body['replaces']
         }
 
         # Send the item as a message to the SQS queue
@@ -36,4 +38,3 @@ def write_metadata_upload(event, context):
             "message": str(e),
         }
         return {"statusCode": 500, "body": json.dumps(body)}
-

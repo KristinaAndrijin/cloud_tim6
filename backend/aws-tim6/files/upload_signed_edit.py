@@ -7,7 +7,7 @@ def generate_signed_url_edit(event, context):
         s3_client = boto3.client('s3')
 
         request_body = json.loads(event['body'])
-        obj_key = request_body['obj_key']
+        object_key = request_body['obj_key']
         content_type = request_body['contentType']
         user_info = event['requestContext']['authorizer']['claims']
         username = user_info['preferred_username']
@@ -26,7 +26,7 @@ def generate_signed_url_edit(event, context):
         # Generate a presigned URL for uploading the file
         signed_url = s3_client.generate_presigned_url(
             'put_object',
-            Params={'Bucket': bucket_name, 'Key': obj_key, 'ContentType': content_type},
+            Params={'Bucket': bucket_name, 'Key': object_key, 'ContentType': content_type},
             ExpiresIn=3600  # URL expiration time in seconds (adjust as needed)
         )
 
@@ -35,7 +35,7 @@ def generate_signed_url_edit(event, context):
             'statusCode': 200,
             'body': json.dumps({
                 'signedUrl': signed_url,
-                'key': key
+                'key': object_key
             }),
             'headers': {
                 'Access-Control-Allow-Origin': '*',

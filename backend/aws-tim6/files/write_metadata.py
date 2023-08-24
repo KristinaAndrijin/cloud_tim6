@@ -25,8 +25,9 @@ def write_metadata(event, context):
         item_ok = item["object_key"].replace(" ", "+")
         if object_key == item_ok:
 
-            if item["replaces"].replace(" ", "+") != item_ok:
+            if item["replaces"] and item["replaces"].replace(" ", "+") != item_ok:
                 replace_helper(item)
+
             else:
                 table.put_item(Item=item)
                 sqs.delete_message(
