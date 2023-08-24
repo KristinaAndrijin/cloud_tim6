@@ -125,5 +125,6 @@ const ELEMENT_DATA: UserAccess[] = [];
 
 interface UserAccess {
   username: string;
+  access: boolean;
   hasAccess: boolean;
 }
