@@ -60,7 +60,7 @@ def get_files_by_album(event, context):
                 response = album_object_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
                 items.extend(response['Items'])
             for item in items:
-                if (item['album_key'] == album_name and album_name in album_keys) or (album_name == username and item['object_key'] in files_keys) or item['album_key']==username:
+                if (item['album_key'] == album_name and album_name in album_keys) or (album_name == username and item['object_key'] in files_keys) or (item['album_key']==username and album_name == username):
                     # print(item['album_key'])
                     object_key = item['object_key']
                     owner, name = object_key.split('/')
