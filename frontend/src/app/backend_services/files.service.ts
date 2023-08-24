@@ -123,6 +123,17 @@ export class FilesService {
     return this.http.post(url, body);
   }
 
+  changeMetadata(object_key:string, description:string, tags:string): Observable<any> {
+    const url = `${environment.baseUrl}change_metadata`;
+    const body = {
+      obj_key: object_key,
+      description: description,
+      tags: tags,
+    };
+
+    return this.http.post(url, body);
+  }
+
   getDummyAlbums() {
     return this.albums;
   }

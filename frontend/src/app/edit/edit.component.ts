@@ -50,7 +50,7 @@ export class EditComponent {
   uploadFile(): void {
     if (!this.file) {
       
-      
+      this.filesService.changeMetadata(this.object_key,this.description,this.tags)
 
     }
   
