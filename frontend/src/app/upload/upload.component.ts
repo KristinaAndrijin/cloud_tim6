@@ -46,15 +46,14 @@ export class UploadComponent {
     const fileTags: string = this.tags;
   
     this.filesService.uploadFile(this.file, fileDescription, fileTags, this.albumName).subscribe(
-      {
+      { 
         next: result => {
-          console.log(this.albumName);
+          console.log("zapocet upload")
           this.snackBar.open('File upload started', 'Dismiss', {
             duration: 3000, 
             horizontalPosition: 'center', 
             verticalPosition: 'bottom' 
           });
-          console.log(result);
         },
         error: e => {
           console.log(e);

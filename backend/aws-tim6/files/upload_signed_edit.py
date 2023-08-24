@@ -7,12 +7,12 @@ def generate_signed_url_edit(event, context):
         s3_client = boto3.client('s3')
 
         request_body = json.loads(event['body'])
-        object_key = request_body['obj_key']
+        old_object_key = request_body['obj_key']
         content_type = request_body['contentType']
         user_info = event['requestContext']['authorizer']['claims']
         username = user_info['preferred_username']
 
-        file_key_user = object_key.split("/")[0]
+        file_key_user = old_object_key.split("/")[0]
         if file_key_user != username:
             body = {
                 "message": "You cannot edit someone else's item!"
@@ -23,6 +23,8 @@ def generate_signed_url_edit(event, context):
             }
             return response
 
+        file_name = request_body["fileName"]
+        object_key = file_key_user + "/" + file_name
         # Generate a presigned URL for uploading the file
         signed_url = s3_client.generate_presigned_url(
             'put_object',

@@ -227,7 +227,7 @@ editFile(file: File, fileDescription: string, fileTags: string, obj_key:string):
   const now: string = `${day}.${month+1}.${year}. ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
 
-  return this.http.post(url, { obj_key, contentType }).pipe(
+  return this.http.post(url, { obj_key, fileName ,contentType }).pipe(
     switchMap((response: any) => {
       const { signedUrl, key } = response;
 
