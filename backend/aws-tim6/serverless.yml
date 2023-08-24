@@ -176,6 +176,21 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  change_file_metadata:
+    handler: files/change_metadata.change_metadata
+    package:
+      patterns:
+        - 'files/change_metadata.py'
+    events:
+      - http:
+          path: change_metadata
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
   generate_signed_url_download:
     handler: files/download_signed.generate_signed_url
     package:

@@ -10,7 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class EditComponent {
 
-  albumName: string = "";
+  object_key: string = "";
   description: string = "";
   tags: string = "";
   file: File | null = null;
@@ -24,8 +24,20 @@ export class EditComponent {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.albumName = params['album'];
+      this.object_key = params['object_key'];
     });
+
+    this.filesService.getMetadata(this.object_key).subscribe(
+      {next: result => {
+        this.description = result.description
+        this.tags = result.tags
+      },
+      error: e => {
+        console.log(e);
+        alert(e?.error?.message || JSON.stringify(e));
+        console.log(e?.error?.message || JSON.stringify(e));
+      }}
+    )
   }
 
   onFileSelected(event: any): void {
@@ -37,14 +49,15 @@ export class EditComponent {
 
   uploadFile(): void {
     if (!this.file) {
-      alert('Please select a file.');  
-      return; 
+      
+      
+
     }
   
     const fileDescription: string = this.description;
     const fileTags: string = this.tags;
   
-    this.filesService.uploadFile(this.file, fileDescription, fileTags, this.albumName).subscribe(
+    /*this.filesService.uploadFile(this.file, fileDescription, fileTags, this.albumName).subscribe(
       {
         next: result => {
           console.log(this.albumName);
@@ -61,7 +74,7 @@ export class EditComponent {
           console.log(e?.error?.message || JSON.stringify(e));
         }
       }
-    );
+    );*/
   }
 
 }
