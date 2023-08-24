@@ -122,8 +122,8 @@ export class ExplorerComponent {
   deleteFile(file: any) {
     const fileName = file.name;
     const fileOwner = file.owner;
-    const downloadPayload = file.owner + "/" + file.name;
-    this.filesService.delete_item(downloadPayload).subscribe(
+    const object_key = file.owner + "/" + file.name;
+    this.filesService.delete_item(object_key).subscribe(
       response => {
         console.log('delet complet')
       },
@@ -194,7 +194,14 @@ export class ExplorerComponent {
     });
   }
   
-  
+  removeFromAlbum(file: any){
+    const object_key = file.owner + "/" + file.name;
+    console.log(file.upload_date)
+    console.log(object_key)
+    console.log(this.fullAlbumName)
+    this.albumService.remove_file_from_album(object_key, this.fullAlbumName, file.upload_date).subscribe();
+  }
+
   getAlbums() {
     let path = this.albumName.split('/');
     let position = path.slice(0).join('/') + '/';

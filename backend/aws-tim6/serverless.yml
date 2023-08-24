@@ -117,6 +117,21 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  remove_file_album:
+    handler: files/remove_file_album.remove_file_album
+    package:
+      patterns:
+        - 'files/remove_file_album.py'
+    events:
+      - http:
+          path: remove_file_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
 
   write_metadata:
     handler: files/write_metadata.write_metadata

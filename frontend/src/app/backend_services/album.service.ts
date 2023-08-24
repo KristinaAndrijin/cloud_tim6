@@ -22,6 +22,13 @@ export class AlbumService {
     {headers: new HttpHeaders().set("content-type", "application/json")}
     );
  }
+ remove_file_from_album(filename:string, albumname:string, upload_date: string){
+  return this.http.post(`${environment.baseUrl}remove_file_album`,{
+    "album_name":albumname,
+    "file_name":filename,
+    "upload_date":upload_date
+  })
+ }
 
  getUsersPermissions(album_name: string):Observable<any> {
   return this.http.post(`${environment.baseUrl}get_access_by_user_album`,
