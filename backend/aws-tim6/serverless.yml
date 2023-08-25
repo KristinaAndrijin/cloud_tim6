@@ -176,6 +176,21 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  get_albums_for_file_move:
+    handler: files/get_albums_for_file_move.get_albums
+    package:
+      patterns:
+        - 'files/get_albums_for_file_move.py'
+    events:
+      - http:
+          path: get_albums_for_file_move
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
   change_file_metadata:
     handler: files/change_metadata.change_metadata
     package:

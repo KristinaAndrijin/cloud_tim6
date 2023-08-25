@@ -26,6 +26,7 @@ export class ExplorerComponent {
   dialogAlbumName: string ="";
   fullAlbumName : string = "";
   show_span: boolean = false;
+  
 
   constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
 
@@ -201,16 +202,28 @@ export class ExplorerComponent {
   }
 
   openAlbumDialog(file: any) {
-    const dialogRef = this.dialog.open(AlbumDialogComponent, {
-      width: '450px',
-      data: this.albums
-    });
-  
-    dialogRef.afterClosed().subscribe(album => {
-      if (album) {
-        console.log(album.name);
+    this.filesService.getAlbumsForMove(file.owner+"/"+file.name).subscribe(
+      {
+        next: result => {
+          console.log(result)
+          const dialogRef = this.dialog.open(AlbumDialogComponent, {
+            width: '450px',
+            data: result
+          });
+        
+          dialogRef.afterClosed().subscribe(album => {
+            if (album) {
+              console.log(album.name);
+            }
+          });
+        },
+        error: err => {
+          console.log(err);
+          alert(err?.error?.message || JSON.stringify(err));
+        }
       }
-    });
+    )
+    
   }
   
   removeFromAlbum(file: any){

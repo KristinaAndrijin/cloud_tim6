@@ -3,7 +3,7 @@
     <ul>
         <li *ngFor="let album of albums" (click)="selectAlbum(album)" class="album-item">
             <span id="album-name">{{ album.name }}</span>
-            <span id="album-owner">{{ album.owner }}</span>
+            <span id="album-owner">owner: {{album.owner }}</span>
         </li>
     </ul>
 </div>

@@ -332,4 +332,15 @@ editFile(file: File, fileDescription: string, fileTags: string, obj_key:string):
       );
    }
 
+   getAlbumsForMove(object_key:string):Observable<any>
+   {
+    const url = `${environment.baseUrl}/get_albums_for_file_move`; 
+
+    const payload = {
+      object_key : object_key
+    };
+
+    return this.http.post(url, payload);
+   }
+
 }
