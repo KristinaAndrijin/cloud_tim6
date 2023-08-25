@@ -47,6 +47,8 @@ def write_metadata(event, context):
 
 
 def replace_helper(item):
+
+    # ako se desi da novi fajl koji se uploaduje da "edit"uje prošli ima drugačije ime, onda mora da zameni sve pojave starog u tabelama
     print("počeo sammmmm")
     bucket_name = 'projekat6'
     metadata_table = 'filesMetadata'
@@ -54,6 +56,7 @@ def replace_helper(item):
     user_files_table = 'userFiles'
     real_dynamodb = boto3.client('dynamodb')
 
+    # zamena samog s3 objekta
     try:
         s3_client.delete_object(
             Bucket=bucket_name,
@@ -68,6 +71,7 @@ def replace_helper(item):
             "body": f"Error occurred: {str(e)}"
         }
 
+    # zamena u metadata
     try:
         real_dynamodb.delete_item(
             TableName=metadata_table,
@@ -89,6 +93,46 @@ def replace_helper(item):
             "statusCode": 400,
             "body": f"Error occurred: {str(e)}"
         }
+
+    # zamena u album object
+
+    try:
+        response = real_dynamodb.scan(
+            TableName=album_object_table,
+            Select='ALL_ATTRIBUTES',
+            FilterExpression='object_key = :val',
+            ExpressionAttributeValues={':val': {'S': item["replaces"]}}
+        )
+        for result in response["Items"]:
+            key = {
+                'album_key': result['album_key'],
+                'object_key': result['object_key']
+            }
+            real_dynamodb.delete_item(
+                TableName=album_object_table,
+                Key=key
+            )
+
+            album_object_item = {
+                'album_key': result['album_key'],
+                'object_key': {'S': item["object_key"]},
+                'upload_date': result['upload_date']
+
+            }
+            real_dynamodb.put_item(
+                TableName=album_object_table,
+                Item=album_object_item
+            )
+
+    except Exception as e:
+        print('ne radi albumObject')
+        print(e)
+        return {
+            "statusCode": 400,
+            "body": f"Error occurred: {str(e)}"
+        }
+
+
 
 
 
