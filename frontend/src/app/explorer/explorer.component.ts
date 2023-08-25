@@ -30,6 +30,7 @@ export class ExplorerComponent {
   constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
 
   ngOnInit(): void {
+    this.resetVariables();
     // console.log(this.albums);
     // this.albums = this.filesService.getDummyAlbums();
     this.route.queryParams.subscribe(params => {
@@ -50,6 +51,22 @@ export class ExplorerComponent {
     this.getAlbums();
     this.getFiles();
 
+  }
+
+  NgOnRefresh(): void {
+
+    this.ngOnInit();
+
+  }
+
+  resetVariables(): void 
+  {
+    this.albums = [];
+    this.files=[];
+    this.albumName ="";
+    this.albumNameD = "";
+    this.dialogAlbumName ="";
+    this.fullAlbumName = "";
   }
 
   navigateToExplorer(albumName: string) {

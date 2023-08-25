@@ -132,6 +132,43 @@ def replace_helper(item):
             "body": f"Error occurred: {str(e)}"
         }
 
+    # zamena u user files
+
+    try:
+        response = real_dynamodb.scan(
+            TableName=user_files_table,
+            Select='ALL_ATTRIBUTES',
+            FilterExpression='file_key = :val',
+            ExpressionAttributeValues={':val': {'S': item["replaces"]}}
+        )
+        for result in response["Items"]:
+            key = {
+                'username': result['username'],
+                'file_key': result['file_key']
+            }
+            real_dynamodb.delete_item(
+                TableName=user_files_table,
+                Key=key
+            )
+
+            user_files_item = {
+                'username': result['username'],
+                'file_key': {'S': item["object_key"]},
+
+            }
+            real_dynamodb.put_item(
+                TableName=user_files_table,
+                Item=user_files_item
+            )
+
+    except Exception as e:
+        print('ne radi userFiles')
+        print(e)
+        return {
+            "statusCode": 400,
+            "body": f"Error occurred: {str(e)}"
+        }
+
 
 
 
