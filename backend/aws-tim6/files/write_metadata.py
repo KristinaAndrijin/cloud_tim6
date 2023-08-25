@@ -32,7 +32,10 @@ def write_metadata(event, context):
             if item["replaces"] is not None:
                 if item["replaces"].replace(" ", "+") != item_ok:
                     replace_helper(item)
-
+                    sqs.delete_message(
+                        QueueUrl=metadata_queue_url,
+                        ReceiptHandle=message["ReceiptHandle"]
+                    )
             else:
                 table.put_item(Item=item)
                 sqs.delete_message(
@@ -45,7 +48,6 @@ def write_metadata(event, context):
 
 def replace_helper(item):
     print("počeo sammmmm")
-    replaces_object_key_formatted = item["replaces"].replace(" ", "+")
     bucket_name = 'projekat6'
     metadata_table = 'filesMetadata'
     album_object_table = 'albumObject'
@@ -55,7 +57,7 @@ def replace_helper(item):
     try:
         s3_client.delete_object(
             Bucket=bucket_name,
-            Key=replaces_object_key_formatted
+            Key=item["replaces"]
         )
         print('radi s3')
     except Exception as e:
@@ -69,7 +71,7 @@ def replace_helper(item):
     try:
         real_dynamodb.delete_item(
             TableName=metadata_table,
-            Key={"object_key": {"S": replaces_object_key_formatted}}
+            Key={"object_key": {"S": item["replaces"]}}
         )
     except Exception as e:
         print(e)
