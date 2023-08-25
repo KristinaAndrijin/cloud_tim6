@@ -191,6 +191,21 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  add_file_to_album:
+    handler: files/add_file_to_album.add_to_album
+    package:
+      patterns:
+        - 'files/add_file_to_album.py'
+    events:
+      - http:
+          path: add_file_to_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
   change_file_metadata:
     handler: files/change_metadata.change_metadata
     package:

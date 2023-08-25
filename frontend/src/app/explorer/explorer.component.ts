@@ -9,6 +9,7 @@ import { StringDialogComponent } from '../string-dialog/string-dialog.component'
 import { AlbumService } from '../backend_services/album.service';
 import { AlbumDialogComponent } from '../album-dialog/album-dialog.component';
 import { JwtService } from '../jwt.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -28,7 +29,7 @@ export class ExplorerComponent {
   show_span: boolean = false;
   
 
-  constructor(private filesService: FilesService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
+  constructor(private filesService: FilesService, private router: Router,private snackBar: MatSnackBar, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
 
   ngOnInit(): void {
     this.resetVariables();
@@ -214,6 +215,66 @@ export class ExplorerComponent {
           dialogRef.afterClosed().subscribe(album => {
             if (album) {
               console.log(album.name);
+              this.filesService.addFileToAlbum(album.name, file.owner+"/"+file.name, file.upload_date).subscribe(
+                {
+                  next: result => {
+                    this.snackBar.open('File added to album', 'Dismiss', {
+                      duration: 3000, 
+                      horizontalPosition: 'center', 
+                      verticalPosition: 'bottom' 
+                    });
+                  },
+                  error: e =>
+                  {
+                    console.log(e)
+                    alert(e?.error?.message || JSON.stringify(e));
+                  }
+                }
+              )
+
+            }
+          });
+        },
+        error: err => {
+          console.log(err);
+          alert(err?.error?.message || JSON.stringify(err));
+        }
+      }
+    )
+    
+  }
+
+
+  openMoveAlbumDialog(file: any) {
+    this.filesService.getAlbumsForMove(file.owner+"/"+file.name).subscribe(
+      {
+        next: result => {
+          console.log(result)
+          const dialogRef = this.dialog.open(AlbumDialogComponent, {
+            width: '450px',
+            data: result
+          });
+        
+          dialogRef.afterClosed().subscribe(album => {
+            if (album) {
+              console.log(album.name);
+              this.filesService.addFileToAlbum(album.name, file.owner+"/"+file.name, file.upload_date).subscribe(
+                {
+                  next: result => {
+                    this.snackBar.open('File added to album', 'Dismiss', {
+                      duration: 3000, 
+                      horizontalPosition: 'center', 
+                      verticalPosition: 'bottom' 
+                    });
+                  },
+                  error: e =>
+                  {
+                    console.log(e)
+                    alert(e?.error?.message || JSON.stringify(e));
+                  }
+                }
+              )
+
             }
           });
         },

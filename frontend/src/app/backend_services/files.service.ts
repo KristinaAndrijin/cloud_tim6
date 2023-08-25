@@ -343,4 +343,17 @@ editFile(file: File, fileDescription: string, fileTags: string, obj_key:string):
     return this.http.post(url, payload);
    }
 
+   addFileToAlbum(album:string, object_key:string, upload_date:string):Observable<any>
+   {
+    const url = `${environment.baseUrl}/add_file_to_album`; 
+
+    const payload = {
+      object_key : object_key,
+      album_key:album,
+      upload_date:upload_date
+    };
+
+    return this.http.post(url, payload);
+   }
+
 }
