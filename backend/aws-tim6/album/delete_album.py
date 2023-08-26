@@ -29,6 +29,8 @@ def delete_album(event, context):
                 delete_album_content_and_permissions(album_name)
                 sub_albums = find_album_keys_with_prefix(album_name)
                 for album in sub_albums:
+                    if isinstance(album, dict):
+                        album = album["S"]
                     delete_album_content_and_permissions(album)
                 body = {
                     "message": "Deleted album!",
@@ -81,12 +83,17 @@ def delete_album_content_and_permissions(album_name):
                 }
             )
 
+
 def get_all_album_objects(album_key):
+    loc_ak = album_key
+    if isinstance(loc_ak, dict):
+        loc_ak = loc_ak["S"]
+
     all_object_keys_in_album = []
     response = dynamodb.query(
         TableName=object_album_table,
         KeyConditionExpression='album_key = :album_key',
-        ExpressionAttributeValues={':album_key': {"S": album_key}},
+        ExpressionAttributeValues={':album_key': {"S": loc_ak}},
         ProjectionExpression='object_key'
     )
     for item in response['Items']:
