@@ -64,6 +64,8 @@ def get_albums(event, context):
                 "owner": username
             })
 
+        print(result_list)
+
         return {
             "statusCode": 200,
             "body": json.dumps(result_list)
