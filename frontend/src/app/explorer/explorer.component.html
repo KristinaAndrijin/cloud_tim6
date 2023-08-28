@@ -63,8 +63,8 @@
     <h3 class="noShow" *ngIf="files.length==0" >No files to show!</h3>
   </div>
   <div class="buttons">
-    <button class="create-album" (click)="create_album()">create an album</button>
-    <button class="upload" (click)="uploadFile(albumName)">upload a file</button>
+    <button *ngIf="currentAlbumOwner == currentUser" class="create-album" (click)="create_album()">create an album</button>
+    <button *ngIf="currentAlbumOwner == currentUser" class="upload" (click)="uploadFile(albumName)">upload a file</button>
   </div>
 
 </div>

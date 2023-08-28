@@ -29,6 +29,8 @@
       </td>
     </tr>
   </table>
-  <button (click)="download()">Download</button>
-  <button (click)="delete_button()">Delete</button>
+  <div class="buttons">
+    <button (click)="download()">Download</button>
+    <button *ngIf="currentAlbumOwner == currentUser" (click)="delete_button()">Delete</button>
+  </div>
 </div>

@@ -107,7 +107,7 @@ export class RegistrationComponent implements OnInit{
         } else {
           console.log(result);
           that.router.navigate(['/login']);
-          alert("Slay!");
+          // alert("Slay!");
         }
       })
     if (codeSuccess && this.codeSuccessful) {

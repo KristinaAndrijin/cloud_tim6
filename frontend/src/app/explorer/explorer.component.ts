@@ -28,6 +28,7 @@ export class ExplorerComponent {
   fullAlbumName : string = "";
   show_span: boolean = false;
   currentUser!:any;
+  currentAlbumOwner!:string;
   
 
   constructor(private filesService: FilesService, private router: Router,private snackBar: MatSnackBar, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
@@ -38,6 +39,9 @@ export class ExplorerComponent {
     // this.albums = this.filesService.getDummyAlbums();
     this.route.queryParams.subscribe(params => {
       this.albumName = params['album'];
+      console.log(this.albumName);
+      this.currentAlbumOwner = this.albumName.split('/')[0];
+      console.log(this.currentAlbumOwner);
       this.albumNameD = this.albumName;
       this.fullAlbumName = params['album'];
       this.currentUser = this.jwtService.getCurrentUser();
@@ -150,6 +154,7 @@ export class ExplorerComponent {
     this.filesService.delete_item(object_key).subscribe(
       response => {
         console.log('delet complet')
+        this.getFiles();
       },
       error => {
         console.error('Error generating presigned URL for download:', error);

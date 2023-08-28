@@ -120,7 +120,7 @@ give_access(userAccess: UserAccess) {
       }
     );
   } else {
-    alert('slay');
+    // alert('slay');
     console.log(userAccess);
     console.log(this.file_key);
     this.filesService.giveAccessPermissions(this.file_key, userAccess.username).subscribe(
@@ -156,7 +156,7 @@ remove_access(userAccess: UserAccess) {
       }
     );
   } else {
-    alert('slay');
+    // alert('slay');
     console.log(userAccess);
     console.log(this.file_key);
     this.filesService.removeAccessPermissions(this.file_key, userAccess.username).subscribe(

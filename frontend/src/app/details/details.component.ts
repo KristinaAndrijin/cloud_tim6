@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilesService } from '../backend_services/files.service';
 import { relative } from '@angular/compiler-cli';
+import { JwtService } from '../jwt.service';
 
 @Component({
   selector: 'app-details',
@@ -12,7 +13,10 @@ export class DetailsComponent {
   fileName: string = "";
   albumName: string = "";
   fileDetails: any;
-  constructor(private route: ActivatedRoute, private router: Router, private filesService: FilesService) { }
+  currentAlbumOwner!:string;
+  currentUser!:any;
+
+  constructor(private route: ActivatedRoute, private router: Router, private filesService: FilesService, private jwtService: JwtService) { }
 
 
   formatBytes(bytes: number, decimals: number = 2): string {
@@ -46,6 +50,8 @@ export class DetailsComponent {
     this.route.queryParams.subscribe(params => {
       this.fileName = params['file'];
       this.albumName = params['album'];
+      this.currentAlbumOwner = this.albumName.split('/')[0];
+      this.currentUser = this.jwtService.getCurrentUser();
 
       this.filesService.getMetadata(this.fileName).subscribe(
         response => {
