@@ -5,6 +5,7 @@ import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cogn
 import { environment } from 'src/environments/environment';
 import { JwtService } from '../jwt.service';
 import { HelloService } from '../backend_services/hello.service';
+import { CognitoService } from '../backend_services/cognito.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit{
   loginForm!: FormGroup;
   isDisabled: boolean = false;
 
-  constructor(private router: Router, private jwtService: JwtService, private helloService: HelloService) {
+  constructor(private router: Router, private jwtService: JwtService, private helloService: HelloService, private cognitoService: CognitoService) {
     this.check = this.check.bind(this);
    }
 
@@ -34,6 +35,18 @@ export class LoginComponent implements OnInit{
   onLogin() {
     this.username = this.loginForm.get('username')?.value;
     this.password = this.loginForm.get('password')?.value
+    // this.cognitoService.login(this.username, this.password).subscribe(
+    //   {
+    //     next: result => {
+    //       console.log(result);
+    //       alert("Login");
+    //     },
+    //     error: err => {
+    //       console.log(err);
+    //       alert(err?.error?.message || JSON.stringify(err));
+    //     }
+    //   }
+    // )
     let authenticationDetails = new AuthenticationDetails({
       Username: this.username,
       Password: this.password,
@@ -75,6 +88,8 @@ export class LoginComponent implements OnInit{
           this.isLoading = false;
         },
       });
+
+
   }
 
   check(control: AbstractControl) {

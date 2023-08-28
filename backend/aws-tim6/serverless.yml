@@ -35,6 +35,11 @@ provider:
 
     - Effect: Allow
       Action:
+        - ses:VerifyEmailIdentity
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
         - dynamodb:DescribeTable
         - dynamodb:Query
         - dynamodb:Scan
@@ -69,6 +74,11 @@ provider:
       Resource:
         - arn:aws:states:eu-central-1:275505252693:stateMachine:MyStepFunction
         - arn:aws:states:eu-central-1:275505252693:stateMachine:InviteStateMachine
+
+    - Effect: Allow
+      Action:
+        - states:DescribeExecution
+      Resource: "*"
 
 
 stepFunctions:
@@ -170,8 +180,42 @@ stepFunctions:
             Next: RESULT_HANDLER
 
 
-
 functions:
+  verify_identity:
+    handler: ses.verify_identity
+    package:
+      patterns:
+        - 'ses.py'
+    events:
+      - http:
+          path: verify_identity
+          method: POST
+          cors: true
+
+
+  login:
+    handler: cognito-users.login
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: login
+          method: POST
+          cors: false
+
+  signup:
+    handler: cognito-users.signup
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: signup
+          method: POST
+          cors: false
+
+
   delete_item:
     handler: files/delete_item.delete_item
     package:
