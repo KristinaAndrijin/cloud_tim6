@@ -27,6 +27,7 @@ export class ExplorerComponent {
   dialogAlbumName: string ="";
   fullAlbumName : string = "";
   show_span: boolean = false;
+  currentUser!:any;
   
 
   constructor(private filesService: FilesService, private router: Router,private snackBar: MatSnackBar, private route: ActivatedRoute, private dialog: MatDialog, private albumService:AlbumService, private jwtService: JwtService) { }
@@ -42,7 +43,7 @@ export class ExplorerComponent {
       // console.log(this.albumName);
       if (this.albumName.includes('/default')) {
         // console.log('sadrzi');
-        let bla = this.jwtService.getCurrentUser();
+        this.currentUser = this.jwtService.getCurrentUser();
         // if (this.albumName.includes('default')){
         //   this.show_span = true;
         // }

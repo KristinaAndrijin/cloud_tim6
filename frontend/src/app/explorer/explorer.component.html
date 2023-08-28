@@ -12,12 +12,15 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #albumOptionsMenu="matMenu">
-          <button mat-menu-item (click)="deleteAlbum(album)">
+          <button *ngIf="album.owner == currentUser" mat-menu-item (click)="deleteAlbum(album)">
             Delete
           </button>
-          <button mat-menu-item (click)="editAlbumPermissions(album)">
+          <button *ngIf="album.owner == currentUser" mat-menu-item (click)="editAlbumPermissions(album)">
             Edit Album Permissions
           </button>
+          <span *ngIf="album.owner != currentUser" disabled mat-menu-item>
+            No options for you!
+          </span>
         </mat-menu>
       </div>
     </div>
@@ -36,22 +39,22 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #fileOptionsMenu="matMenu">
-          <button mat-menu-item (click)="editFile(file)">
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="editFile(file)">
             Edit
           </button>
           <button mat-menu-item (click)="downloadFile(file)">
             Download
           </button>
-          <button mat-menu-item (click)="openAlbumDialog(file)">
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="openAlbumDialog(file)">
             Add to Album
           </button>
-          <button mat-menu-item (click)="removeFromAlbum(file)">
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="removeFromAlbum(file)">
             Remove from Album
           </button>
-          <button mat-menu-item (click)="deleteFile(file)">
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="deleteFile(file)">
             Delete
           </button>
-          <button mat-menu-item (click)="editFilePermissions(file)">
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="editFilePermissions(file)">
             Edit File Permissions
           </button>
         </mat-menu>
