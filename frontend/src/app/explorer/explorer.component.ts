@@ -40,10 +40,13 @@ export class ExplorerComponent {
       this.albumName = params['album'];
       this.albumNameD = this.albumName;
       this.fullAlbumName = params['album'];
+      this.currentUser = this.jwtService.getCurrentUser();
+        console.log(this.currentUser);
       // console.log(this.albumName);
       if (this.albumName.includes('/default')) {
         // console.log('sadrzi');
         this.currentUser = this.jwtService.getCurrentUser();
+        console.log(this.currentUser);
         // if (this.albumName.includes('default')){
         //   this.show_span = true;
         // }
