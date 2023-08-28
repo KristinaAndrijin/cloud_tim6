@@ -1,7 +1,6 @@
 import json
 import boto3
 
-
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('invitations')
 
@@ -32,20 +31,19 @@ def post_invitation(event, context):
             }
             condition_expression = 'attribute_not_exists(inviter) AND attribute_not_exists(invitee)'
             table.put_item(Item=item, ConditionExpression=condition_expression)
-            
-            
-            #ses
+
+            # ses
             sender_email = "aws.tim6@gmail.com"
-            # recipient_email = email 
-            recipient_email = "aws.tim6@gmail.com" #currently_hardcoded
+            recipient_email = email
+            # recipient_email = "aws.tim6@gmail.com" #currently_hardcoded
             subject = "Invitation to AWS TIM6"
-            message_body = "You're invited to our app by " + inviter_email +"! In order to accept invitation, click here: http://localhost:4200/family-registration?inviter=" + inviter_username + "&invitee="+ email +" and register!"
+            message_body = "You're invited to our app by " + inviter_email + "! In order to accept invitation, click here: http://localhost:4200/family-registration?inviter=" + inviter_username + "&invitee=" + email + " and register!"
             response = ses_client.send_email(
                 Source=sender_email,
                 Destination={"ToAddresses": [recipient_email]},
                 Message={"Subject": {"Data": subject}, "Body": {"Text": {"Data": message_body}}},
             )
-            
+
             body = {
                 "message": "Successfully invited person!",
                 "inviter": inviter_username,
@@ -62,7 +60,7 @@ def post_invitation(event, context):
             }
         except Exception as e:
             return {"statusCode": 500, "body": str(e)}
-        
+
     else:
         body = {
             "message": "Missing token",

@@ -21,7 +21,7 @@ def confirm_invite(event, context):
         event_body = event
         # print(event_body)
         inviter = event_body.get('inviter')
-        invitee = event_body.get("invitee_email")
+        invitee = event_body.get("invitee")
 
         print(inviter, invitee)
 
@@ -42,8 +42,8 @@ def confirm_invite(event, context):
 
             # ses
             sender_email = "aws.tim6@gmail.com"
-            # recipient_email = event_body.get("inviter_email")
-            recipient_email = "aws.tim6@gmail.com"  # currently_hardcoded
+            recipient_email = invitee
+            # recipient_email = "aws.tim6@gmail.com"  # currently_hardcoded
             subject = "Invitation to AWS TIM6"
             message_body = "Hello " + invitee_username + "! Your account is verified!! You can now login and use AWS TIM6 app as you wish! http://localhost:4200/"
             response = ses_client.send_email(

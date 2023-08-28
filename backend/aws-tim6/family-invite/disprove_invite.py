@@ -17,7 +17,7 @@ def disprove_invite(event, context):
         # dynamo db
         event_body = event
         inviter = event_body.get('inviter')
-        invitee = event_body.get("invitee_email")
+        invitee = event_body.get("invitee")
 
         response = table.get_item(
             Key={

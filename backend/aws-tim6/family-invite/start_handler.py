@@ -15,13 +15,12 @@ def start_handler(event, context):
             event_body = json.loads(event["body"])
             invitee = event_body.get("invitee_email")
             invitee_username = event_body.get("invitee_username")
-            type_ = event_body.get("type")
+            type_ = event_body.get("action")
 
             state_machine_input = {
                 "inviter": inviter,
                 "invitee": invitee,
                 "invitee_username": invitee_username,
-                "otherData": "other values",
                 "type": type_
             }
 
@@ -33,8 +32,7 @@ def start_handler(event, context):
             response = {
                 "statusCode": 200,
                 "body": json.dumps({
-                    "message": "Lambda function executed successfully",
-                    "stateMachineResult": execution_response
+                    "message": "Lambda function executed successfully"
                 })
             }
 
