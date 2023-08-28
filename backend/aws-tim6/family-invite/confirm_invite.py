@@ -3,6 +3,9 @@ import boto3
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('invitations')
+table_userAlbum = dynamodb.Table('userAlbum')
+table_userFiles = dynamodb.Table('userFiles')
+table_albumObject = dynamodb.Table('albumObject')
 
 ses_client = boto3.client("ses")
 
@@ -60,6 +63,8 @@ def confirm_invite(event, context):
                 }
             )
 
+            give_permissions(invitee_username, inviter)
+
             if response['ResponseMetadata']['HTTPStatusCode'] == 200:
                 body = {
                     "message": "Successful conformation of identity",
@@ -94,3 +99,45 @@ def confirm_invite(event, context):
     #         "message": "Missing token",
     #     }
     #     return {"statusCode": 401, "body": json.dumps(body)}
+
+
+def give_permissions(invitee, inviter):
+    # album
+    response = table_userAlbum.scan()
+    items = response['Items']
+    while 'LastEvaluatedKey' in response:
+        response = table_userAlbum.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+        items.extend(response['Items'])
+    albums = []
+    for item in items:
+        if item['username'] == inviter:
+            albums.append(item['album_key'])
+    for album in albums:
+        item = {
+            'username': invitee,
+            'album_key': album
+        }
+        condition_expression = 'attribute_not_exists(username) AND attribute_not_exists(album_key)'
+        table_userAlbum.put_item(Item=item, ConditionExpression=condition_expression)
+
+    # get files
+    response = table_albumObject.scan()
+    items = response['Items']
+    while 'LastEvaluatedKey' in response:
+        response = table_albumObject.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+        items.extend(response['Items'])
+    files = []
+    for item in items:
+        if item['album_key'] == inviter:
+            files.append(item['object_key'])
+
+    # enter files
+    for file in files:
+        item = {
+            'username': invitee,
+            'file_key': file
+        }
+        condition_expression = 'attribute_not_exists(username) AND attribute_not_exists(album_key)'
+        table_userFiles.put_item(Item=item, ConditionExpression=condition_expression)
+
+
