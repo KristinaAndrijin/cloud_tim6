@@ -64,6 +64,8 @@ def get_files_by_album(event, context):
                     # print(item['album_key'])
                     object_key = item['object_key']
                     owner, name = object_key.split('/')
+                    if {'owner': owner, 'name': name, 'upload_date': item['upload_date']} in files:
+                        continue;
                     files.append({'owner': owner, 'name': name, 'upload_date': item['upload_date']})
 
             # files.append({'owner': 'rkis', 'name': 'n', 'upload_date': '18.10.2000. 19:46:18'})
