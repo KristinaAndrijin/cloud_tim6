@@ -1,0 +1,28 @@
+<div class="div" *ngIf="!decided">
+    <h1>User {{invitee_username}}  ({{invitee_email}}) has accepted your invitation to our app!</h1>
+    <h2>Confirm that it was you that sent the invitation here:</h2>
+    <div class="button-div">
+        <button class="accept" (click)="onConfirm()">Confirm</button>
+        <button class="reject" (click)="onDisprove()">Disprove</button>
+    </div>
+    <h4>After conformation, the user gets access to all your files and albums!</h4>
+    <h4>After disproval, the user will be deleted and your files are safe!</h4>
+</div>
+
+<div class="div" *ngIf="decided">
+    <h1>Login to confirm your identity</h1>
+    <form
+      method="POST"
+      [formGroup]="loginForm" 
+      (ngSubmit)="onLogin()"
+    >
+      <label>Username: </label><label class="element">{{inviter_username}} </label>
+      <br><br><br>
+
+        <input class="element" type="password" name="password" minlength="8" formControlName="password" placeholder="Enter Password" id="password" required>
+        <div *ngIf="loginForm.hasError('validPassword')">Password not in the right format</div>
+        <br>
+
+        <button class="loginbtn" (keydown.enter)="onLogin()" type="submit" [disabled]="isDisabled">Login</button>
+    </form>
+</div>

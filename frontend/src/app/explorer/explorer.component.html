@@ -1,0 +1,70 @@
+<div class="list-container">
+  <div class="list-header">
+    <h1 id="album-name">{{ albumNameD }}</h1>
+  </div>
+  <div class="album-list">
+    <h1>Albums:</h1>
+    <div *ngIf="albums.length!=0">
+      <div *ngFor="let album of albums" class="album-item">
+        <span class="album-name" (click)="navigateToExplorer(album.owner + '/' + album.name)">{{ album.fancy_name }}</span>
+        <span class="album-owner">Owner: {{ album.owner }}</span>
+        <button mat-icon-button class="album-options" [matMenuTriggerFor]="albumOptionsMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #albumOptionsMenu="matMenu">
+          <button *ngIf="album.owner == currentUser" mat-menu-item (click)="deleteAlbum(album)">
+            Delete
+          </button>
+          <button *ngIf="album.owner == currentUser" mat-menu-item (click)="editAlbumPermissions(album)">
+            Edit Album Permissions
+          </button>
+          <span *ngIf="album.owner != currentUser" disabled mat-menu-item>
+            No options for you!
+          </span>
+        </mat-menu>
+      </div>
+    </div>
+    <h3 class="noShow" *ngIf="albums.length==0" >No albums to show!</h3>
+    <h1>Files:</h1>
+    <span *ngIf="show_span">You have permissions to view the following files: </span>
+   <br *ngIf="show_span"><br *ngIf="show_span">
+    <div *ngIf="files.length!=0">
+      <div *ngFor="let file of files" class="file-item">
+        <span class="file-name" (click)="navigateToDetails(file.key)">{{ file.name }}</span>
+        <span class="file-middle">
+          <span class="file-owner">Owner: {{ file.owner }}</span>
+          <span class="file-date">Date Uploaded: {{ file.upload_date }}</span>
+        </span>
+        <button mat-icon-button class="file-options" [matMenuTriggerFor]="fileOptionsMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #fileOptionsMenu="matMenu">
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="editFile(file)">
+            Edit
+          </button>
+          <button mat-menu-item (click)="downloadFile(file)">
+            Download
+          </button>
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="openAlbumDialog(file)">
+            Add to Album
+          </button>
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="removeFromAlbum(file)">
+            Remove from Album
+          </button>
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="deleteFile(file)">
+            Delete
+          </button>
+          <button *ngIf="file.owner == currentUser" mat-menu-item (click)="editFilePermissions(file)">
+            Edit File Permissions
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+    <h3 class="noShow" *ngIf="files.length==0" >No files to show!</h3>
+  </div>
+  <div class="buttons">
+    <button *ngIf="currentAlbumOwner == currentUser" class="create-album" (click)="create_album()">create an album</button>
+    <button *ngIf="currentAlbumOwner == currentUser" class="upload" (click)="uploadFile(albumName)">upload a file</button>
+  </div>
+
+</div>

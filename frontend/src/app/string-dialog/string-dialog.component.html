@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Enter album name:</h2>
+    <div mat-dialog-content>
+      <mat-form-field>
+        <input matInput [value]="inputString" (input)="inputString = inputElement.value" required #inputElement />
+    </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+      <button mat-button [mat-dialog-close]="inputString" cdkFocusInitial>OK</button>
+      <button mat-button (click)="onCancelClick()">Cancel</button>
+    </div>

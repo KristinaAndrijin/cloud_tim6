@@ -1,0 +1,42 @@
+/* upload.component.css */
+button {
+    padding: 10px 20px;
+    background-color: #292c29;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 200px;
+  }
+  
+  button:hover {
+    background-color: #af209a;
+  }
+  
+  .upload-container {
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 12px;
+    align-self: flex-start; /* Align labels with the top of the text areas */
+  }
+  
+  input,
+  textarea {
+    font-size: 14px;
+    width: 50%;
+    vertical-align: top;
+    border-radius: 8px;
+  }
+  
+  textarea {
+    height: 72px; /* Set the desired height for 3 rows of text */
+  }
+  

@@ -1,0 +1,9 @@
+<div class="dialog-container">
+    <h2>Select an Album</h2>
+    <ul>
+        <li *ngFor="let album of albums" (click)="selectAlbum(album)" class="album-item">
+            <span id="album-name">{{ album.name }}</span>
+            <span id="album-owner">owner: {{album.owner }}</span>
+        </li>
+    </ul>
+</div>

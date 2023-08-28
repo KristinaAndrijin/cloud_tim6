@@ -1,0 +1,1016 @@
+service: aws-tim6
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-step-functions
+
+provider:
+  name: aws
+  runtime: python3.9
+  profile: serverlessUser
+  region: eu-central-1
+  stage: dev
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminGetUser
+        - cognito-idp:ListUsers
+        - cognito-idp:*
+      Resource:
+        - "Fn::GetAtt": [CognitoUserPool, Arn]
+
+    - Effect: Allow
+      Action:
+        - sns:Publish
+        - sns:Subscribe
+      Resource: arn:aws:sns:eu-central-1:275505252693:SNSTopic
+
+    - Effect: Allow
+      Action:
+        - ses:*
+      Resource:
+        - arn:aws:ses:eu-central-1:275505252693:identity/aws.tim6@gmail.com
+
+    - Effect: Allow
+      Action:
+        - ses:VerifyEmailIdentity
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [InvitationTable, Arn]
+        - "Fn::GetAtt": [filesMetadata, Arn]
+        - "Fn::GetAtt": [albumObject, Arn]
+        - "Fn::GetAtt": [userAlbum, Arn]
+        - "Fn::GetAtt": [userFiles, Arn]
+        # add other tables here using the same sintax
+        # InvitationTable is resource name, not table name!
+
+    - Effect: Allow
+      Action:
+        - s3:*
+        - s3:PutObject
+      Resource:
+        - arn:aws:s3:::projekat6/*
+    - Effect: Allow
+      Action:
+        - sqs:*
+      Resource:
+        - "Fn::GetAtt": [UploadMetadataQueue, Arn]
+        - "Fn::GetAtt": [UploadAlbumObjectQueue, Arn]
+    - Effect: Allow
+      Action:
+        - states:*
+      Resource:
+        - arn:aws:states:eu-central-1:275505252693:stateMachine:MyStepFunction
+        - arn:aws:states:eu-central-1:275505252693:stateMachine:InviteStateMachine
+
+    - Effect: Allow
+      Action:
+        - states:DescribeExecution
+      Resource: "*"
+
+
+stepFunctions:
+  stateMachines:
+    myStepFunction:
+      name: MyStepFunction
+      definition:
+        Comment: "A parallel Step Function"
+        StartAt: ParallelState
+        States:
+          ParallelState:
+            Type: Parallel
+            Branches:
+              - StartAt: LambdaFunction1
+                States:
+                  LambdaFunction1:
+                    Type: Task
+                    Resource:
+                      Fn::GetAtt: [write_metadata, Arn]
+                    Parameters:
+                      object_key.$: $.object_key
+                    End: true
+              - StartAt: LambdaFunction2
+                States:
+                  LambdaFunction2:
+                    Type: Task
+                    Resource:
+                      Fn::GetAtt: [write_albumObject, Arn]
+                    Parameters:
+                      object_key.$: $.object_key
+                    End: true
+            End: true
+
+    familyInviteStateMachine:
+      name: FamilyInviteStateMachine
+      definition:
+        Comment: "A description of my state machine"
+        StartAt: Choice
+        States:
+          Choice:
+            Type: Choice
+            Choices:
+              - Variable: "$.type"
+                StringEquals: "CONFIRM"
+                Next: CONFIRM_HANDLER
+              - Variable: "$.type"
+                StringEquals: "DISPROVE"
+                Next: DISPROVE_HANDLER
+          CONFIRM_HANDLER:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            OutputPath: "$.Payload"
+            Parameters:
+              Payload.$: "$"
+              FunctionName: arn:aws:lambda:eu-central-1:275505252693:function:aws-tim6-dev-confirm_invite:$LATEST
+            Retry:
+              - ErrorEquals:
+                  - Lambda.ServiceException
+                  - Lambda.AWSLambdaException
+                  - Lambda.SdkClientException
+                  - Lambda.TooManyRequestsException
+                IntervalSeconds: 2
+                MaxAttempts: 6
+                BackoffRate: 2
+            Next: RESULT_HANDLER
+          RESULT_HANDLER:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            OutputPath: "$.Payload"
+            Parameters:
+              Payload.$: "$"
+              FunctionName: arn:aws:lambda:eu-central-1:275505252693:function:aws-tim6-dev-result_handler:$LATEST
+            Retry:
+              - ErrorEquals:
+                  - Lambda.ServiceException
+                  - Lambda.AWSLambdaException
+                  - Lambda.SdkClientException
+                  - Lambda.TooManyRequestsException
+                IntervalSeconds: 2
+                MaxAttempts: 6
+                BackoffRate: 2
+            End: true
+          DISPROVE_HANDLER:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            OutputPath: "$.Payload"
+            Parameters:
+              Payload.$: "$"
+              FunctionName: arn:aws:lambda:eu-central-1:275505252693:function:aws-tim6-dev-disprove_invite:$LATEST
+            Retry:
+              - ErrorEquals:
+                  - Lambda.ServiceException
+                  - Lambda.AWSLambdaException
+                  - Lambda.SdkClientException
+                  - Lambda.TooManyRequestsException
+                IntervalSeconds: 2
+                MaxAttempts: 6
+                BackoffRate: 2
+            Next: RESULT_HANDLER
+
+
+functions:
+  verify_identity:
+    handler: ses.verify_identity
+    package:
+      patterns:
+        - 'ses.py'
+    events:
+      - http:
+          path: verify_identity
+          method: POST
+          cors: true
+
+
+  login:
+    handler: cognito-users.login
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: login
+          method: POST
+          cors: false
+
+  signup:
+    handler: cognito-users.signup
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: signup
+          method: POST
+          cors: false
+
+
+  delete_item:
+    handler: files/delete_item.delete_item
+    package:
+      patterns:
+        - 'files/delete_item.py'
+    events:
+      - http:
+          path: delete_item
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  remove_file_album:
+    handler: files/remove_file_album.remove_file_album
+    package:
+      patterns:
+        - 'files/remove_file_album.py'
+    events:
+      - http:
+          path: remove_file_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
+  write_metadata:
+    handler: files/write_metadata.write_metadata
+    package:
+      patterns:
+        - 'files/write_metadata.py'
+
+  write_albumObject:
+    handler: files/write_albumObject.write_albumObject
+    package:
+      patterns:
+        - 'files/write_albumObject.py'
+
+  get_signed_url:
+    handler: files/upload_signed.generate_signed_url
+    package:
+      patterns:
+        - 'files/upload_signed.py'
+    events:
+      - http:
+          path: get_signed_url
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
+  get_file_metadata:
+    handler: files/obtain_metadata.obtain_metadata
+    package:
+      patterns:
+        - 'files/obtain_metadata.py'
+    events:
+      - http:
+          path: obtain_metadata
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_albums_for_file_move:
+    handler: files/get_albums_for_file_move.get_albums
+    package:
+      patterns:
+        - 'files/get_albums_for_file_move.py'
+    events:
+      - http:
+          path: get_albums_for_file_move
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  add_file_to_album:
+    handler: files/add_file_to_album.add_to_album
+    package:
+      patterns:
+        - 'files/add_file_to_album.py'
+    events:
+      - http:
+          path: add_file_to_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  change_file_metadata:
+    handler: files/change_metadata.change_metadata
+    package:
+      patterns:
+        - 'files/change_metadata.py'
+    events:
+      - http:
+          path: change_metadata
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  generate_signed_url_download:
+    handler: files/download_signed.generate_signed_url
+    package:
+      patterns:
+        - 'files/download_signed.py'
+    events:
+      - http:
+          path: generate_presigned_url_download
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
+  generate_signed_url_edit:
+    handler: files/upload_signed_edit.generate_signed_url_edit
+    package:
+      patterns:
+        - 'files/upload_signed_edit.py'
+    events:
+      - http:
+          path: generate_presigned_url_edit
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
+  sleeper_agent:
+    handler: files/sleeper_agent.sleeper_agent
+    package:
+      patterns:
+        - 'files/sleeper_agent.py'
+    events:
+      - s3:
+          bucket: projekat6
+          event: s3:ObjectCreated:*
+          existing: true
+
+  upload_write_metadata_to_queue:
+    handler: files/upload_file_write_metadata.write_metadata_upload
+    package:
+      patterns:
+        - 'files/upload_file_write_metadata.py'
+    events:
+      - http:
+          path: upload_write_metadata_to_queue
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  upload_write_album_object_to_queue:
+    handler: files/upload_write_album_object.write_album_object
+    package:
+      patterns:
+        - 'files/upload_write_album_object.py'
+    events:
+      - http:
+          path: write_album_object_to_queue
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  hello_from_other_func:
+    handler: handler.hello
+    package:
+      patterns:
+        - 'handler.py'
+    events:
+      - http:
+          path: hello
+          method: GET
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_users:
+    handler: cognito-users.get_users
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: getUsers
+          method: GET
+          cors: true
+          # authorizer:
+          #   type: COGNITO_USER_POOLS
+          #   authorizerId:
+          #     Ref: ApiGatewayAuthorizer
+
+  confirm_user:
+    handler: cognito-users.confirm_user
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: confirmUser
+          method: POST
+          cors: true
+          # authorizer:
+          #   type: COGNITO_USER_POOLS
+          #   authorizerId:
+          #     Ref: ApiGatewayAuthorizer
+
+  delete_user:
+    handler: cognito-users.delete_user
+    package:
+      patterns:
+        - 'cognito-users.py'
+    events:
+      - http:
+          path: delete_user
+          method: POST
+          cors: true
+          # authorizer:
+          #   type: COGNITO_USER_POOLS
+          #   authorizerId:
+          #     Ref: ApiGatewayAuthorizer
+
+  post_invitation:
+    handler: family-invite/post_invitation.post_invitation
+    package:
+      patterns:
+        - 'family-invite/post_invitation.py'
+    events:
+      - http:
+          path: post_invitation
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  accept_invitation:
+    handler: family-invite/accept_invitation.accept_invitation
+    package:
+      patterns:
+        - 'family-invite/accept_invitation.py'
+    events:
+      - http:
+          path: accept_invitation
+          method: PUT
+          cors: true
+
+  confirm_invite:
+    handler: family-invite/confirm_invite.confirm_invite
+    package:
+      patterns:
+        - 'family-invite/confirm_invite.py'
+    events:
+      - http:
+          path: confirm_invite
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  result_handler:
+    handler: family-invite/result_handler.result_handler
+    package:
+      patterns:
+        - 'family-invite/result_handler.py'
+    events:
+      - http:
+          path: result_handler
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  start_handler:
+    handler: family-invite/start_handler.start_handler
+    package:
+      patterns:
+        - 'family-invite/start_handler.py'
+    events:
+      - http:
+          path: start_handler
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
+  disprove_invite:
+    handler: family-invite/disprove_invite.disprove_invite
+    package:
+      patterns:
+        - 'family-invite/disprove_invite.py'
+    events:
+      - http:
+          path: disprove_invite
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  publish:
+    handler: sns.publish
+    package:
+      patterns:
+        - 'sns.py'
+    events:
+      - http:
+          path: publish
+          method: GET
+          cors: true
+
+  subscribe:
+    handler: sns.subscribe
+    package:
+      patterns:
+        - 'sns.py'
+    events:
+      - http:
+          path: subscribe
+          method: GET
+          cors: true
+
+  sendEmail:
+    handler: ses.send_email
+    package:
+      patterns:
+        - 'ses.py'
+    events:
+      - http:
+          path: send-email
+          method: POST
+          cors: true
+          
+
+  ################## ALBUMI ####################
+  create_album:
+    handler: album/create_album.create_album
+    package:
+      patterns:
+        - 'album/create_album.py'
+    events:
+      - http:
+          path: create_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  
+  delete_album:
+    handler: album/delete_album.delete_album
+    package:
+      patterns:
+        - 'album/delete_album.py'
+    events:
+      - http:
+          path: delete_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_albums_by_user:
+    handler: album/get_albums.get_albums_by_user
+    package:
+      patterns:
+        - 'album/get_albums.py'
+    events:
+      - http:
+          path: get_albums_by_user
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_users_by_album:
+    handler: album/get_albums.get_users_by_album
+    package:
+      patterns:
+        - 'album/get_albums.py'
+    events:
+      - http:
+          path: get_users_by_album
+          method: GET
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  give_access_to_album_to_user:
+    handler: album/give_album_access.give_access_to_album_to_user
+    package:
+      patterns:
+        - 'album/give_album_access.py'
+    events:
+      - http:
+          path: give_access_to_album_to_user
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  remove_access_to_album_from_user:
+    handler: album/remove_album_access.remove_access_to_album_from_user
+    package:
+      patterns:
+        - 'album/remove_album_access.py'
+    events:
+      - http:
+          path: remove_access_to_album_from_user
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_access_by_user_album:
+    handler: album/get_access.get_access_by_user_album
+    package:
+      patterns:
+        - 'album/get_access.py'
+    events:
+      - http:
+          path: get_access_by_user_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_files_by_album:
+    handler: files/get_files.get_files_by_album
+    package:
+      patterns:
+        - 'files/get_files.py'
+    events:
+      - http:
+          path: get_files_by_album
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  give_access_to_file_to_user:
+    handler: files/give_file_access.give_access_to_file_to_user
+    package:
+      patterns:
+        - 'files/give_file_access.py'
+    events:
+      - http:
+          path: give_access_to_file_to_user
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  remove_access_to_file_from_user:
+    handler: files/remove_file_access.remove_access_to_file_from_user
+    package:
+      patterns:
+        - 'files/remove_file_access.py'
+    events:
+      - http:
+          path: remove_access_to_file_from_user
+          method: PUT
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  get_access_by_user_file:
+    handler: files/get_access.get_access_by_user_file
+    package:
+      patterns:
+        - 'files/get_access.py'
+    events:
+      - http:
+          path: get_access_by_user_file
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+resources:
+  Resources:
+
+    UploadMetadataQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: metadata-queue
+        VisibilityTimeout: 30
+        MessageRetentionPeriod: 300
+
+
+    UploadAlbumObjectQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: album-object-queue-real
+        VisibilityTimeout: 30
+        MessageRetentionPeriod: 300
+
+
+    projekat6:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: projekat6
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins: ['*']
+              AllowedMethods:
+                - GET 
+                - POST
+                - PUT
+                - DELETE
+    filesMetadata:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: filesMetadata
+        AttributeDefinitions:
+          - AttributeName: object_key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: object_key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:provider.stage}-user-pool
+        # UsernameAttributes:
+        #   - username
+        AutoVerifiedAttributes:
+          - email
+          # - phone_number
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireNumbers: true
+            RequireSymbols: true
+            RequireUppercase: true
+        UsernameConfiguration:
+          CaseSensitive: true
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: verified_email
+              Priority: 1
+            - Name: verified_phone_number
+              Priority: 2
+        Schema:
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: given_name
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: family_name
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: phone_number
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: email
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: preferred_username
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: birthdate
+        # EmailVerificationSubject: Verify your email for our app
+        # EmailVerificationMessage: Please click the link below to verify your email address. {####} is your verification code.
+        # SmsVerificationMessage: Your verification code for our app is {####}
+        # MfaConfiguration: ON
+        EmailConfiguration:
+          EmailSendingAccount: COGNITO_DEFAULT
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.stage}-user-pool-client
+        UserPoolId: !Ref CognitoUserPool
+        GenerateSecret: false
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        TokenValidityUnits:
+          AccessToken: minutes
+          IdToken: minutes
+          RefreshToken: days
+        AccessTokenValidity: 30
+        IdTokenValidity: 60
+        RefreshTokenValidity: 10
+        DefaultRedirectURI: http://localhost:4200/
+        CallbackURLs:
+          - http://localhost:4200/
+        LogoutURLs:
+          - http://localhost:4200/login
+        SupportedIdentityProviders:
+          - COGNITO
+        AllowedOAuthFlows:
+          - code
+          - implicit
+        AllowedOAuthScopes:
+          - openid
+          - email
+          - profile
+
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ApiGateway
+
+
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain: album6
+        UserPoolId: !Ref CognitoUserPool
+
+
+    CognitoApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Name: MyApiAuthorizer
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        ProviderARNs:
+          - Fn::GetAtt: [CognitoUserPool, Arn]
+
+    ApiGatewayAuthorizer:
+      DependsOn:
+        - ApiGatewayRestApi
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: cognito-authorizer
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - Fn::GetAtt: [CognitoUserPool, Arn]
+
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: SNSTopic
+
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: aws.tim6@gmail.com
+        Protocol: email
+        TopicArn: {"Ref": "SNSTopic"}
+
+    SESIdentity:
+      Type: AWS::SES::EmailIdentity
+      Properties: 
+        EmailIdentity: aws.tim6@gmail.com
+
+
+    InvitationTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: invitations
+        AttributeDefinitions:
+          - AttributeName: inviter
+            AttributeType: S
+          - AttributeName: invitee
+            AttributeType: S
+        KeySchema:
+          - AttributeName: inviter
+            KeyType: HASH
+          - AttributeName: invitee
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    albumObject:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: albumObject
+        AttributeDefinitions:
+          - AttributeName: album_key
+            AttributeType: S
+          - AttributeName: object_key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: album_key
+            KeyType: HASH
+          - AttributeName: object_key
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+          
+    userAlbum:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: userAlbum
+        AttributeDefinitions:
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: album_key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+          - AttributeName: album_key
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    userFiles:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: userFiles
+        AttributeDefinitions:
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: file_key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+          - AttributeName: file_key
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+

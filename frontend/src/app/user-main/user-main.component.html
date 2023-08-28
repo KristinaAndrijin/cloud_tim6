@@ -1,0 +1,16 @@
+<div class="list-container">
+  <div class="list-header">
+    <h1>Albums:</h1>
+  </div>
+  <div class="album-list">
+    <div *ngFor="let album of albums" class="album-item" (click)="navigateToExplorer(album.owner + '/' + album.name)">
+      <span class="album-name">{{ album.name }}</span>
+      <span class="album-owner">Owner: {{ album.owner }}</span>
+      
+    </div>
+  </div>
+  <div class="buttons">
+    <button class="create-album" (click)="create_album()">create an album</button>
+    <button class="upload" (click)="uploadFile('')">upload a file</button>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="div">
+    <h1>Registration</h1>
+    <form
+      method="POST"
+      [formGroup]="registerForm" 
+      (ngSubmit)="onSignup()"
+    >
+
+        <label>Inviter: </label><label class="element">{{inviter_username}} </label>
+        <br><br>
+
+        <input class="element" type="text"  formControlName="fname" placeholder="Enter First name" name="fname" id="fname" required>
+        <div *ngIf="registerForm.hasError('validName')">Name not in the right format</div>
+        <br>
+
+        <input class="element" type="text"  formControlName="lname" placeholder="Enter Last name" name="lname" id="lname" required>
+        <div *ngIf="registerForm.hasError('validSurname')">Surname not in the right format</div>
+        <br>
+
+        <input class="element" type="text"  formControlName="username" placeholder="Enter Username" name="username" id="username" required>
+        <div *ngIf="registerForm.hasError('validUsername')">Username not in the right format</div>
+        <br><br>
+
+        <label>Email: </label><label class="element">{{invitee_email}} </label>
+        <br><br><br>
+
+        <input class="element" type="text"   formControlName="mobileNo" placeholder="Enter Mobile number" name="mobileNo" id="mobileNo" required>
+        <div *ngIf="registerForm.hasError('validPN')">Number not in the right format</div>
+        <br>
+
+        <br/>
+        <label for="birthdate">Enter birthdate: </label>
+        <input class="element" type="date"  formControlName="birthdate" placeholder="Enter Birthdate" name="birthdate" id="birthdate" required>
+        <br/>
+        <div *ngIf="registerForm.hasError('validB')">Choose date!!!</div>
+        <br>
+
+        <input class="element" type="password" name="password" minlength="8" formControlName="password" placeholder="Enter Password" id="password" required>
+        <div *ngIf="registerForm.hasError('validPassword')">Password not in the right format</div>
+        <br>
+
+        <button class="registerbtn" (keydown.enter)="onSignup()" type="submit" [disabled]="isDisabled">Register</button>
+    </form>
+</div>

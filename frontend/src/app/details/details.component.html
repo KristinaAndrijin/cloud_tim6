@@ -1,0 +1,36 @@
+<div class="details-container" *ngIf="fileDetails">
+  <table class="details-table">
+    <tr>
+      <th>Name</th>
+      <td>{{ fileDetails.name }}</td>
+    </tr>
+    <tr>
+      <th>Type</th>
+      <td>{{ fileDetails.type }}</td>
+    </tr>
+    <tr>
+      <th>Size</th>
+      <td>{{ formatBytes(fileDetails.size) }}</td>
+    </tr>
+    <tr>
+      <th>Upload Date</th>
+      <td>{{ fileDetails.upload_date }}</td>
+    </tr>
+    <tr>
+      <th>Description</th>
+      <td>{{ fileDetails.description }}</td>
+    </tr>
+    <tr>
+      <th>Tags</th>
+      <td>
+        <ng-container *ngIf="fileDetails.tags">
+          {{ fileDetails.tags.split(',').join('   ') }}
+        </ng-container>
+      </td>
+    </tr>
+  </table>
+  <div class="buttons">
+    <button (click)="download()">Download</button>
+    <button *ngIf="currentAlbumOwner == currentUser" (click)="delete_button()">Delete</button>
+  </div>
+</div>
