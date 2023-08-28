@@ -92,7 +92,7 @@ export class ResolveInvitationComponent implements OnInit {
                 this.jwtService.logout();
               },
               error: e =>{
-                alert("Something went wrong");
+                alert(e?.error?.message);
                 console.log(e);
               }
             })

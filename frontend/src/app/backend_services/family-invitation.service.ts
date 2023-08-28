@@ -30,18 +30,20 @@ export class FamilyInvitationService {
   }
 
   confirm(invitee_email: string, invitee_username: string):Observable<any> {
-    return this.http.put(`${environment.baseUrl}confirm_invite`,
+    return this.http.post(`${environment.baseUrl}start_handler`,
     {"invitee_email": invitee_email,
-      "invitee_username": invitee_username
+      "invitee_username": invitee_username,
+      "action": "CONFIRM"
     },
     {headers: new HttpHeaders().set("content-type", "application/json")}
     );
   }
 
   disprove(invitee_email: string, invitee_username: string):Observable<any> {
-    return this.http.put(`${environment.baseUrl}disprove_invite`,
+    return this.http.post(`${environment.baseUrl}start_handler`,
     {"invitee_email": invitee_email,
-      "invitee_username": invitee_username
+      "invitee_username": invitee_username,
+      "action": "DISPROVE"
     },
     {headers: new HttpHeaders().set("content-type", "application/json")}
     );

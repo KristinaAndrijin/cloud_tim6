@@ -68,6 +68,7 @@ provider:
         - states:*
       Resource:
         - arn:aws:states:eu-central-1:275505252693:stateMachine:MyStepFunction
+        - arn:aws:states:eu-central-1:275505252693:stateMachine:InviteStateMachine
 
 
 stepFunctions:
@@ -100,6 +101,75 @@ stepFunctions:
                       object_key.$: $.object_key
                     End: true
             End: true
+
+    familyInviteStateMachine:
+      name: FamilyInviteStateMachine
+      definition:
+        Comment: "A description of my state machine"
+        StartAt: Choice
+        States:
+          Choice:
+            Type: Choice
+            Choices:
+              - Variable: "$.type"
+                StringEquals: "CONFIRM"
+                Next: CONFIRM_HANDLER
+              - Variable: "$.type"
+                StringEquals: "DISPROVE"
+                Next: DISPROVE_HANDLER
+          CONFIRM_HANDLER:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            OutputPath: "$.Payload"
+            Parameters:
+              Payload.$: "$"
+              FunctionName: arn:aws:lambda:eu-central-1:275505252693:function:aws-tim6-dev-confirm_invite:$LATEST
+            Retry:
+              - ErrorEquals:
+                  - Lambda.ServiceException
+                  - Lambda.AWSLambdaException
+                  - Lambda.SdkClientException
+                  - Lambda.TooManyRequestsException
+                IntervalSeconds: 2
+                MaxAttempts: 6
+                BackoffRate: 2
+            Next: RESULT_HANDLER
+          RESULT_HANDLER:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            OutputPath: "$.Payload"
+            Parameters:
+              Payload.$: "$"
+              FunctionName: arn:aws:lambda:eu-central-1:275505252693:function:aws-tim6-dev-result_handler:$LATEST
+            Retry:
+              - ErrorEquals:
+                  - Lambda.ServiceException
+                  - Lambda.AWSLambdaException
+                  - Lambda.SdkClientException
+                  - Lambda.TooManyRequestsException
+                IntervalSeconds: 2
+                MaxAttempts: 6
+                BackoffRate: 2
+            End: true
+          DISPROVE_HANDLER:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            OutputPath: "$.Payload"
+            Parameters:
+              Payload.$: "$"
+              FunctionName: arn:aws:lambda:eu-central-1:275505252693:function:aws-tim6-dev-disprove_invite:$LATEST
+            Retry:
+              - ErrorEquals:
+                  - Lambda.ServiceException
+                  - Lambda.AWSLambdaException
+                  - Lambda.SdkClientException
+                  - Lambda.TooManyRequestsException
+                IntervalSeconds: 2
+                MaxAttempts: 6
+                BackoffRate: 2
+            Next: RESULT_HANDLER
+
+
 
 functions:
   delete_item:
@@ -394,6 +464,37 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+
+  result_handler:
+    handler: family-invite/result_handler.result_handler
+    package:
+      patterns:
+        - 'family-invite/result_handler.py'
+    events:
+      - http:
+          path: result_handler
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  start_handler:
+    handler: family-invite/start_handler.start_handler
+    package:
+      patterns:
+        - 'family-invite/start_handler.py'
+    events:
+      - http:
+          path: start_handler
+          method: POST
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
 
   disprove_invite:
     handler: family-invite/disprove_invite.disprove_invite
